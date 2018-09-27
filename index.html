@@ -29,10 +29,12 @@
     var game = new Phaser.Game(config);
     var cursors;
     var font;
+    var logo;
     var A1, B1, C1, D1, P1;
+    var text1, text2, text3, text4;
 
     function preload() {
-        logos.forEach(logo => this.load.image(logo.name, `assets/logos/${logo.file}`));
+        logos.forEach(l => this.load.image(l.name, `assets/logos/${l.file}`));
         cursors = this.input.keyboard.createCursorKeys();
         A1 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         B1 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
@@ -47,28 +49,39 @@
     }
 
     function create() {
-        this.add.image(400, 300, 'Angular');
-        this.add.text(100, 500, 'Angular');
-        this.add.text(200, 500, 'VueJS');
-        this.add.text(300, 500, 'React');
-        this.add.text(400, 500, 'EmberJS');
+        logo = this.add.image(400, 300, 'Angular');
+        text1 = this.add.text(100, 500, 'Angular');
+        text2 = this.add.text(200, 500, 'VueJS');
+        text3 = this.add.text(300, 500, 'React');
+        text4 = this.add.text(400, 500, 'EmberJS');
 
         var music = this.sound.add('theme');
         music.play();
     }
 
+    function onKeyDown(text) {
+        text.setTint(0xff00ff, 0xffff00, 0x0000ff, 0xff0000);
+        text.setFontSize(32);
+        setTimeout(() => {
+            text.clearTint();
+            text.setFontSize(16);
+        }, 150);
+    }
+
+
     function update() {
+
         if (Phaser.Input.Keyboard.JustDown(A1)) {
-            console.log('A1');
+            onKeyDown(text1);
         }
         if (Phaser.Input.Keyboard.JustDown(B1)) {
-            console.log('B1');
+            onKeyDown(text2);
         }
         if (Phaser.Input.Keyboard.JustDown(C1)) {
-            console.log('C1');
+            onKeyDown(text3);
         }
         if (Phaser.Input.Keyboard.JustDown(D1)) {
-            console.log('D1');
+            onKeyDown(text4);
         }
         if (Phaser.Input.Keyboard.JustDown(P1)) {
             console.log('P1');
