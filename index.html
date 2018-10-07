@@ -7,135 +7,192 @@
 <body>
 
 <script>
+    const WIDTH = 640;
+    const HEIGHT = 480;
 
-    const logos = [
+    const LOGOS = [
         {name: 'Angular', file: 'angular.png'},
         {name: 'EmberJS', file: 'ember.png'},
         {name: 'React', file: 'react.png'},
         {name: 'VueJS', file: 'vue.png'},
     ];
 
-    const config = {
-        type: Phaser.AUTO,
-        width: 800,
-        height: 600,
-        scene: {
-            preload: preload,
-            create: create,
-            update: update,
-        }
+    const controlsPlayer1_Keyboard = {
+        A: 'A',
+        B: 'Z',
+        C: 'E',
+        D: 'T',
+        START: 'SPACE',
     };
-
-    function onKeyDown(text) {
-        text.setTint(0xff00ff, 0xffff00, 0x0000ff, 0xff0000);
-        text.setFontSize(32);
-        setTimeout(() => {
-            text.clearTint();
-            text.setFontSize(16);
-        }, 150);
-    }
-
-    class Player {
-        constructor() {
-            this.score = 0;
-            this.buttons = {};
-            this.game = {
-                buttons: {}
-            }
-        }
-
-        setBoutons(A, B, C, D, START) {
-            this.buttons.A = Phaser.Input.Keyboard.KeyCodes[A];
-            this.buttons.B = Phaser.Input.Keyboard.KeyCodes[B];
-            this.buttons.C = Phaser.Input.Keyboard.KeyCodes[C];
-            this.buttons.D = Phaser.Input.Keyboard.KeyCodes[D];
-            this.buttons.START = Phaser.Input.Keyboard.KeyCodes[START];
-        }
-
-        preload(game) {
-            this.game.buttons.A = game.input.keyboard.addKey(this.buttons.A);
-            this.game.buttons.B = game.input.keyboard.addKey(this.buttons.B);
-            this.game.buttons.C = game.input.keyboard.addKey(this.buttons.C);
-            this.game.buttons.D = game.input.keyboard.addKey(this.buttons.D);
-            this.game.buttons.START = game.input.keyboard.addKey(this.buttons.START);
-        }
-
-        update(hud) {
-            if (Phaser.Input.Keyboard.JustDown(this.game.buttons.A)) {
-                onKeyDown(hud.text1);
-            }
-            if (Phaser.Input.Keyboard.JustDown(this.game.buttons.B)) {
-                onKeyDown(hud.text2);
-            }
-            if (Phaser.Input.Keyboard.JustDown(this.game.buttons.C)) {
-                onKeyDown(hud.text3);
-            }
-            if (Phaser.Input.Keyboard.JustDown(this.game.buttons.D)) {
-                onKeyDown(hud.text4);
-            }
-            if (Phaser.Input.Keyboard.JustDown(this.game.buttons.START)) {
-                console.log('P1');
-            }
-        }
-    }
+    const CONTROLS_P1 = controlsPlayer1_Keyboard;
 
     const INITIAL_REMAINING_TIME = 99;
 
-    class Hud {
+
+    class SceneTitle extends Phaser.Scene {
+
         constructor() {
-            this.remainingTime = INITIAL_REMAINING_TIME;
+            super({key: 'sceneTitle'});
         }
 
-        preload(game) {
-            logos.forEach(l => game.load.image(l.name, `assets/logos/${l.file}`));
+        preload() {
+            this.add.text(WIDTH / 2, HEIGHT / 2, 'TITLE');
         }
 
-        create(game) {
-            this.time = game.add.text(400, 50, this.remainingTime);
-            this.logo = game.add.image(400, 300, 'Angular');
-            this.text1 = game.add.text(100, 500, 'Angular');
-            this.text2 = game.add.text(200, 500, 'VueJS');
-            this.text3 = game.add.text(300, 500, 'React');
-            this.text4 = game.add.text(400, 500, 'EmberJS');
-        }
-
-        start() {
-            this.start = new Date();
+        create() {
+            this.time.delayedCall(3000, () => {
+                this.scene.start('sceneDemo')
+            }, [], this);
+            this.p1start = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[CONTROLS_P1.START]);
         }
 
         update() {
+            if (Phaser.Input.Keyboard.JustDown(this.p1start)) {
+                this.scene.start('sceneGameOnePlayer');
+            }
+        }
+
+    }
+
+    class SceneDemo extends Phaser.Scene {
+        constructor() {
+            super({key: 'sceneDemo'});
+        }
+
+        preload() {
+            this.add.text(WIDTH / 2, HEIGHT / 2, 'DEMO');
+        }
+
+        create() {
+            this.time.delayedCall(3000, () => {
+                this.scene.start('sceneScoresOnePlayer')
+            }, [], this);
+        }
+    }
+
+    class SceneScoresOnePlayer extends Phaser.Scene {
+
+        constructor() {
+            super({key: 'sceneScoresOnePlayer'});
+        }
+
+        preload() {
+            this.add.text(WIDTH / 2, HEIGHT / 2, 'ONE PLAYER SCORES');
+        }
+
+        create() {
+            this.time.delayedCall(3000, () => {
+                this.scene.start('sceneScoresTwoPlayers')
+            }, [], this);
+        }
+    }
+
+    class SceneScoresTwoPlayers extends Phaser.Scene {
+        constructor() {
+            super({key: 'sceneScoresTwoPlayers'});
+        }
+
+        preload() {
+            this.add.text(WIDTH / 2, HEIGHT / 2, 'TWO PLAYER SCORES');
+        }
+
+        create() {
+            this.time.delayedCall(3000, () => {
+                this.scene.start('sceneTitle')
+            }, [], this);
+        }
+    }
+
+    class SceneGameOnePlayer extends Phaser.Scene {
+        constructor() {
+            super({key: 'sceneGameOnePlayer'});
+        }
+
+        preload() {
+            this.add.text(WIDTH / 2, HEIGHT / 2, 'sceneGameOnePlayer');
+            this.load.audio('theme', [
+                'assets/audio/Retrojäbä_-_Retrojäbä_-_sbrp_tutorial_remix.mp3'
+            ]);
+
+            LOGOS.forEach(l => this.load.image(l.name, `assets/logos/${l.file}`));
+
+            this.buttons = {};
+        }
+
+        create() {
+            this.buttons.A = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[CONTROLS_P1.A]);
+            this.buttons.B = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[CONTROLS_P1.B]);
+            this.buttons.C = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[CONTROLS_P1.C]);
+            this.buttons.D = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[CONTROLS_P1.D]);
+
+            var music = this.sound.add('theme');
+            music.play();
+            this.remainingTime = INITIAL_REMAINING_TIME;
+            this.time = this.add.text(400, 50, this.remainingTime);
+            this.start = new Date();
+            this.logo = this.add.image(400, 300, 'Angular');
+            this.text1 = this.add.text(100, 300, 'Angular');
+            this.text2 = this.add.text(200, 300, 'VueJS');
+            this.text3 = this.add.text(300, 300, 'React');
+            this.text4 = this.add.text(400, 300, 'EmberJS');
+        }
+
+        update() {
+            if (Phaser.Input.Keyboard.JustDown(this.buttons.A)) {
+                this.onKeyDown(this.text1);
+            }
+            if (Phaser.Input.Keyboard.JustDown(this.buttons.B)) {
+                this.onKeyDown(this.text2);
+            }
+            if (Phaser.Input.Keyboard.JustDown(this.buttons.C)) {
+                this.onKeyDown(this.text3);
+            }
+            if (Phaser.Input.Keyboard.JustDown(this.buttons.D)) {
+                this.onKeyDown(this.text4);
+            }
             const elapsedTime = (new Date().getTime() - this.start.getTime()) / 1000;
             this.remainingTime = Math.round(INITIAL_REMAINING_TIME - elapsedTime);
             this.time.setText(this.remainingTime);
         }
+
+        onKeyDown(text) {
+            text.setTint(0xff00ff, 0xffff00, 0x0000ff, 0xff0000);
+            text.setFontSize(32);
+            setTimeout(() => {
+                text.clearTint();
+                text.setFontSize(16);
+            }, 150);
+        }
     }
 
-    const player1 = new Player();
-    player1.setBoutons('A', 'Z', 'E', 'T', 'SPACE');
+    class SceneGameTwoPlayers extends Phaser.Scene {
+        constructor() {
+            super({key: 'sceneGameTwoPlayers'});
+        }
 
-    const hud = new Hud();
+        preload() {
+            this.add.text(WIDTH / 2, HEIGHT / 2, 'sceneGameTwoPlayers');
+        }
 
-    const game = new Phaser.Game(config);
-
-    function preload() {
-        hud.preload(this);
-        this.load.audio('theme', [
-            'assets/audio/Retrojäbä_-_Retrojäbä_-_sbrp_tutorial_remix.mp3'
-        ]);
-        player1.preload(this);
+        create() {
+        }
     }
 
-    function create() {
-        hud.create(this);
-        var music = this.sound.add('theme');
-        music.play();
-        hud.start();
-    }
+    const config = {
+        type: Phaser.AUTO,
+        width: WIDTH,
+        height: HEIGHT,
+        scene: [
+            SceneTitle,
+            SceneDemo,
+            SceneScoresOnePlayer,
+            SceneScoresTwoPlayers,
+            SceneGameOnePlayer,
+            SceneGameTwoPlayers,
+        ],
+    };
 
-    function update() {
-        player1.update(hud);
-        hud.update();
-    }
+    new Phaser.Game(config);
 </script>
 
 </body>
