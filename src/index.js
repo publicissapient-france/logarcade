@@ -8,7 +8,8 @@ const SceneGameTwoPlayers = require('./scenes/game-two-player');
 const Screen = require('./screen');
 
 const config = {
-    type: Phaser.AUTO,
+    type: Phaser.CANVAS,
+    pixelArt: true,
     width: Screen.WIDTH,
     height: Screen.HEIGHT,
     scene: [
