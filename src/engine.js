@@ -11,7 +11,9 @@ module.exports = {
             const wrongAnswers = _(options).shuffle().take(3).value();
             questions.push({validAnswer, wrongAnswers});
         });
-        let length = 20;
+        let length = 50;
+        console.log('le quizz', _.take(questions, length));
+
         return _.take(questions, length);
     }
 };

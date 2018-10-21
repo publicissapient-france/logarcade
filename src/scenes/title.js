@@ -59,7 +59,7 @@ class SceneTitle extends Phaser.Scene {
 
     update() {
         if (Phaser.Input.Keyboard.JustDown(this.p1start)) {
-            this.scene.start('sceneGameOnePlayer');
+            this.scene.start('sceneLoading');
         }
     }
 
