@@ -1,5 +1,7 @@
 const INITIAL_REMAINING_TIME = 99;
+const DEFAULT_SIZE_QUIZ = 20;
 
 module.exports = {
     INITIAL_REMAINING_TIME,
+    DEFAULT_SIZE_QUIZ
 };

@@ -1,18 +1,25 @@
 const {CONTROLS_P1} = require('../controls');
 const Screen = require('../screen');
 const LOGOS = require('../logos');
-const {INITIAL_REMAINING_TIME} = require('../game');
+const {INITIAL_REMAINING_TIME, DEFAULT_SIZE_QUIZ } = require('../game');
 const Engine = require('../engine');
 const _ = require('lodash');
 
 class SceneGameOnePlayer extends Phaser.Scene {
     constructor() {
         super({key: 'sceneGameOnePlayer'});
-        this.quiz = Engine.createQuizFrom(LOGOS);
         this.currentQuestion = -1;
         this.texts = [];
 
         this.score = 0;
+    }
+
+    init(data)
+    {
+        console.log('init', data);
+        this.sizeOfQuiz = data.sizeOfQuiz;
+        this.quiz = Engine.createQuizFrom(LOGOS, (this.sizeOfQuiz != null ? this.sizeOfQuiz : DEFAULT_SIZE_QUIZ ));
+
     }
 
 

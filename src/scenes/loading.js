@@ -64,7 +64,7 @@ class SceneLoadingGame extends Phaser.Scene {
         this.progressTime.fillRect(50, 180, 0 + this.timePassed * 3, 30);
 
         if (progress > 300 || (this.timePassed * 3) > 300  ) {
-            this.scene.start('sceneGameOnePlayer');
+            this.scene.start('sceneGameOnePlayer' , { sizeOfQuiz : 30 });
         }
 
     }
