@@ -47,35 +47,37 @@ class SceneScoresOnePlayer extends Phaser.Scene {
 
     create() {
         const bg = this.add.image(0, 0, 'bg');
-        bg.setScale(Screen.ZOOM,Screen.ZOOM);
+        bg.setScale(Screen.ZOOM, Screen.ZOOM);
         bg.setZ(-1);
 
         const titleValue = 'ONE PLAYER MODE';
         const title = this.add.text(0, 30, titleValue, {font: `${fontSize}px Monospace`, boundsAlignH: "center"});
         title.x = Screen.WIDTH / 2 - title.width / 2;
 
-        let idx = 0;
-        let rank = 1;
         const texts = _(this.scores)
-            .map(score => {
-                score.rank = rank++;
-                return score;
+            .orderBy(score => score.time)
+            .take(10)
+            .map((score, i) => {
+                const x = -Screen.WIDTH;
+                const y = 90 + (fontSize * i);
+                const rank = _.padStart(formatRank(i + 1), 4);
+                const player = _.padEnd(score.player, 8);
+                const time = formatTime(score.time);
+                const style = {font: `${fontSize}px Monospace`};
+                return this.add.text(x, y, `${rank}.   ${player}   ${time}`, style);
             })
-            .map(score => this.add.text(-Screen.WIDTH, 90 + (fontSize * idx++), `${_.padStart(formatRank(score.rank), 4)}.   ${_.padEnd(score.player, 8)}   ${formatTime(score.time)}`, {font: `${fontSize}px Monospace`}))
             .value();
 
         this.tweens.add({
             targets: texts,
             x: 70,
-            duration: 2000,
+            duration: 1500,
             ease: 'Power3',
-            delay: function (i, total, target) {
-                return i * 100;
-            }
+            delay: i => i * 100
         });
 
         if (CYCLE) {
-            this.time.delayedCall(3000, () => {
+            this.time.delayedCall(5000, () => {
                 this.scene.start('sceneScoresTwoPlayers')
             }, [], this);
         }
