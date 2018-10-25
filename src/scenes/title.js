@@ -1,6 +1,6 @@
 const {CONTROLS_P1} = require('../controls');
 
-var startBtn;
+let startBtn;
 
 class SceneTitle extends Phaser.Scene {
 
@@ -12,8 +12,7 @@ class SceneTitle extends Phaser.Scene {
         var canvas = this.sys.game.canvas;
         var fullscreen = this.sys.game.device.fullscreen;
 
-        if (!fullscreen.available)
-        {
+        if (!fullscreen.available) {
             return;
         }
 
@@ -23,9 +22,10 @@ class SceneTitle extends Phaser.Scene {
 
         canvas.parentNode.appendChild(startBtn);
 
-        startBtn.addEventListener('click', function ()
-        {
-            if (document.fullscreenElement) { return; }
+        startBtn.addEventListener('click', function () {
+            if (document.fullscreenElement) {
+                return;
+            }
 
             canvas[fullscreen.request]();
         });
@@ -53,7 +53,7 @@ class SceneTitle extends Phaser.Scene {
 
         this.cache.bitmapFont.add('knighthawks', Phaser.GameObjects.RetroFont.Parse(this, config));
 
-        this.dynamic = this.add.dynamicBitmapText(0, 190, 'knighthawks', 'LOG ARCADE');
+        this.dynamic = this.add.dynamicBitmapText(0, 190, 'knighthawks', 'KINGOFLOGO');
         this.dynamic.setScale(2);
     }
 
@@ -63,11 +63,12 @@ class SceneTitle extends Phaser.Scene {
         }
     }
 
-    shutdown ()
-    {
-        var canvas = this.sys.game.canvas;
-
-        canvas.parentNode.removeChild(startBtn);
+    shutdown() {
+        try {
+            var canvas = this.sys.game.canvas;
+            canvas.parentNode.removeChild(startBtn);
+        } catch (e) {
+        }
     }
 
 }
