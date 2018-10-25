@@ -30,9 +30,7 @@ const formatRank = rank => {
     }
 };
 
-const formatTime = time => {
-    return `${parseInt(time / 1000)}"${_.padStart((time - (parseInt(time / 1000) * 1000)) / 10, 2, '0') }`;
-};
+const formatTime = time => `${parseInt(time / 1000)}"${_.padStart((time - (parseInt(time / 1000) * 1000)) / 10, 2, '0') }`;
 
 class SceneScoresOnePlayer extends Phaser.Scene {
 
