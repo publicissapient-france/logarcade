@@ -1,4 +1,5 @@
 const {CONTROLS_P1} = require('../controls');
+const Screen = require('../screen');
 
 let startBtn;
 
@@ -17,9 +18,7 @@ class SceneTitle extends Phaser.Scene {
         }
 
         startBtn = document.createElement('button');
-
         startBtn.textContent = 'Start Fullscreen';
-
         canvas.parentNode.appendChild(startBtn);
 
         startBtn.addEventListener('click', function () {
@@ -34,27 +33,17 @@ class SceneTitle extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('knighthawks', 'assets/fonts/knighthawks-font.png');
+        this.load.image('home', 'assets/backgrounds/HOME.png');
     }
 
     create() {
+        const home = this.add.image(0, 0, 'home');
+        home.setPosition(Screen.WIDTH / 2, Screen.HEIGHT / 2, 0, 0);
+        home.setScale(2, 2);
         this.time.delayedCall(3000, () => {
             this.scene.start('sceneDemo')
         }, [], this);
         this.p1start = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[CONTROLS_P1.START]);
-
-        const config = {
-            image: 'knighthawks',
-            width: 32,
-            height: 25,
-            chars: Phaser.GameObjects.RetroFont.TEXT_SET2,
-            charsPerRow: 10
-        };
-
-        this.cache.bitmapFont.add('knighthawks', Phaser.GameObjects.RetroFont.Parse(this, config));
-
-        this.dynamic = this.add.dynamicBitmapText(0, 190, 'knighthawks', 'KINGOFLOGO');
-        this.dynamic.setScale(2);
     }
 
     update() {
