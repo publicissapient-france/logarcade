@@ -1,4 +1,4 @@
-const {CONTROLS_P1} = require('../controls');
+const {CONTROLS_P1, CONTROLS_P2} = require('../controls');
 const Screen = require('../screen');
 const LOGOS = require('../logos');
 const {INITIAL_REMAINING_TIME} = require('../game');
@@ -50,6 +50,13 @@ class SceneGameOnePlayer extends Phaser.Scene {
         this.cache.bitmapFont.add('knighthawks', Phaser.GameObjects.RetroFont.Parse(this, config));
 
         this.nextQuestion();
+
+        //DUEL GAME
+        console.log("CONTROLS_P2", CONTROLS_P2);
+        this.p2start = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[CONTROLS_P2.START]);
+        console.log("p2", this.p2start);
+
+
     }
 
     nextQuestion() {
@@ -105,6 +112,14 @@ class SceneGameOnePlayer extends Phaser.Scene {
         const elapsedTime = (new Date().getTime() - this.start.getTime()) / 1000;
         this.remainingTime = Math.round(INITIAL_REMAINING_TIME - elapsedTime);
         this.time.setText(this.remainingTime);
+
+
+        //DUAL GAME
+        if (Phaser.Input.Keyboard.JustDown(this.p2start)) {
+            this.scene.start('sceneGameTwoPlayers');
+        }
+
+
     }
 
     onKeyDown(text) {
@@ -113,6 +128,9 @@ class SceneGameOnePlayer extends Phaser.Scene {
             text.clearTint();
         }, 150);
     }
+
+
+
 }
 
 module.exports = SceneGameOnePlayer;
