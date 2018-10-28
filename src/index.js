@@ -9,7 +9,7 @@ const SceneEnterNameOnePlayer = require('./scenes/entername-one-player');
 const Screen = require('./screen');
 
 const config = {
-    type: Phaser.CANVAS,
+    type: Phaser.AUTO,
     pixelArt: true,
     width: Screen.WIDTH,
     height: Screen.HEIGHT,
