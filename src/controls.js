@@ -4,6 +4,10 @@ const controlsPlayer1_Keyboard = {
     C: 'E',
     D: 'T',
     START: 'SPACE',
+    UP: 'UP',
+    DOWN: 'DOWN',
+    LEFT: 'LEFT',
+    RIGHT: 'RIGHT',
 };
 
 const controlsPlayer2_Keyboard = {

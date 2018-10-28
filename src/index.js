@@ -4,6 +4,7 @@ const SceneScoresOnePlayer = require('./scenes/hiscores-one-player');
 const SceneScoresTwoPlayers = require('./scenes/hiscores-two-players');
 const SceneGameOnePlayer = require('./scenes/game-one-player');
 const SceneGameTwoPlayers = require('./scenes/game-two-player');
+const SceneEnterNameOnePlayer = require('./scenes/entername-one-player');
 
 const Screen = require('./screen');
 
@@ -13,6 +14,7 @@ const config = {
     width: Screen.WIDTH,
     height: Screen.HEIGHT,
     scene: [
+        // SceneEnterNameOnePlayer,
         SceneTitle,
         SceneDemo,
         SceneScoresOnePlayer,
