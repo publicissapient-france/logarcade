@@ -34,19 +34,28 @@ class SceneTitle extends Phaser.Scene {
 
     preload() {
         this.load.image('home', 'assets/backgrounds/HOME.png');
+        this.load.audio('jingle', ['assets/audio/Rise06.aif.wav']);
     }
 
     create() {
-        const home = this.add.image(0, 0, 'home');
-        home.setPosition(Screen.WIDTH / 2, Screen.HEIGHT / 2, 0, 0);
-        home.setScale(2, 2);
+        this.sound.add('jingle').play();
+
+        this.home = this.add.image(0, 0, 'home').setScale(0).setOrigin(0.5, 0.5);
+        this.home.setPosition(Screen.WIDTH / 2, Screen.HEIGHT / 2, 0, 0);
         this.time.delayedCall(3000, () => {
             this.scene.start('sceneDemo')
         }, [], this);
         this.p1start = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[CONTROLS_P1.START]);
+
+        this.tweens.add({
+            targets: this.home,
+            scaleX: 2,
+            scaleY: 2,
+            duration: 500,
+        });
     }
 
-    update() {
+    update(time, delta) {
         if (Phaser.Input.Keyboard.JustDown(this.p1start)) {
             this.scene.start('sceneGameOnePlayer');
         }
