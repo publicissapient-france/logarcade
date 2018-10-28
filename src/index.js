@@ -15,6 +15,7 @@ const config = {
     height: Screen.HEIGHT,
     scene: [
         // SceneEnterNameOnePlayer,
+
         SceneTitle,
         SceneDemo,
         SceneScoresOnePlayer,

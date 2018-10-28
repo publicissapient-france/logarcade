@@ -40,10 +40,10 @@ class SceneEnterNameOnePlayer extends Phaser.Scene {
         this.buttons.RIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[CONTROLS_P1.RIGHT]);
 
         const titleValue = 'ENTER NAME';
-        this.title = this.add.text(0, 30, titleValue, {font: `${fontSize}px Monospace`, boundsAlignH: "center"});
+        this.title = this.add.text(0, 30, titleValue, {font: `${fontSize}px VT323`, boundsAlignH: "center"});
         this.title.x = Screen.WIDTH / 2 - this.title.width / 2;
 
-        this.name = this.add.text(0, 300, '', {font: `${fontSize}px Monospace`, boundsAlignH: "center"});
+        this.name = this.add.text(0, 300, '', {font: `${fontSize}px VT323`, boundsAlignH: "center"});
 
         this.letters = _(LETTERS)
             .map((letter, i) => {
@@ -52,7 +52,7 @@ class SceneEnterNameOnePlayer extends Phaser.Scene {
                     x += fontSize * 2;
                 }
                 const y = 90 + (parseInt(i / 6) * fontSize);
-                const style = {font: `${fontSize}px Monospace`};
+                const style = {font: `${fontSize}px VT323`};
                 return this.add.text(x, y, letter, style);
             })
             .value();
