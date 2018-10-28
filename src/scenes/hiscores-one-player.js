@@ -1,36 +1,22 @@
 const _ = require('lodash');
 const Screen = require('../screen');
+const Format = require('../format');
 
 const CYCLE = true;
 const fontSize = 36;
 
 const DEFAULT_SCORES = [
-    {player: 'AAAAAAAA', time: 99840},
-    {player: 'BBBBBBB', time: 99830},
-    {player: 'CCCCCCCC', time: 99550},
-    {player: 'DDDDD', time: 99450},
-    {player: 'EEEEEEEE', time: 99240},
-    {player: 'FFFFF', time: 99340},
-    {player: 'GGGGGGGG', time: 99090},
-    {player: 'HHHHHHHH', time: 99370},
-    {player: 'IIIIIIII', time: 99290},
-    {player: 'JJJJJJJJ', time: 99730},
+    {player: 'MPAQUE', time: 99840},
+    {player: 'JSMADJA', time: 99830},
+    {player: 'DATTALI', time: 99550},
+    {player: 'PTIRMAN', time: 99450},
+    {player: 'ABEAUCHA', time: 99240},
+    {player: 'CNGUYEN', time: 99340},
+    {player: 'JJOUANNE', time: 99090},
+    {player: 'FDESROUS', time: 99370},
+    {player: 'KKERNINO', time: 99290},
+    {player: 'MTRACCO', time: 99730},
 ];
-
-const formatRank = rank => {
-    switch (rank) {
-        case 1:
-            return `${rank}st`;
-        case 2:
-            return `${rank}nd`;
-        case 3:
-            return `${rank}rd`;
-        default:
-            return `${rank}th`;
-    }
-};
-
-const formatTime = time => `${parseInt(time / 1000)}"${_.padStart((time - (parseInt(time / 1000) * 1000)) / 10, 2, '0') }`;
 
 class SceneScoresOnePlayer extends Phaser.Scene {
 
@@ -44,30 +30,30 @@ class SceneScoresOnePlayer extends Phaser.Scene {
     }
 
     create() {
-        const bg = this.add.image(0, 0, 'bg');
-        bg.setScale(Screen.ZOOM, Screen.ZOOM);
-        bg.setZ(-1);
+        this.bg = this.add.image(0, 0, 'bg').setOrigin(0);
+        this.bg.setScale(Screen.ZOOM, Screen.ZOOM);
+        this.bg.setZ(-1);
 
         const titleValue = 'ONE PLAYER MODE';
-        const title = this.add.text(0, 30, titleValue, {font: `${fontSize}px Monospace`, boundsAlignH: "center"});
-        title.x = Screen.WIDTH / 2 - title.width / 2;
+        this.title = this.add.text(0, 30, titleValue, {font: `${fontSize}px Monospace`, boundsAlignH: "center"});
+        this.title.x = Screen.WIDTH / 2 - this.title.width / 2;
 
-        const texts = _(this.scores)
+        this.texts = _(this.scores)
             .orderBy(score => score.time)
             .take(10)
             .map((score, i) => {
                 const x = -Screen.WIDTH;
                 const y = 90 + (fontSize * i);
-                const rank = _.padStart(formatRank(i + 1), 4);
-                const player = _.padEnd(score.player, 8);
-                const time = formatTime(score.time);
+                const rank = Format.formatRank(i + 1);
+                const player = Format.formatPlayer(score.player);
+                const time = Format.formatTime(score.time);
                 const style = {font: `${fontSize}px Monospace`};
                 return this.add.text(x, y, `${rank}.   ${player}   ${time}`, style);
             })
             .value();
 
         this.tweens.add({
-            targets: texts,
+            targets: this.texts,
             x: 70,
             duration: 1500,
             ease: 'Power3',
@@ -76,9 +62,20 @@ class SceneScoresOnePlayer extends Phaser.Scene {
 
         if (CYCLE) {
             this.time.delayedCall(5000, () => {
-                this.scene.start('sceneScoresTwoPlayers')
+                this.scene.transition({
+                    target: 'sceneScoresTwoPlayers',
+                    duration: 500,
+                    onUpdate: this.transitionOut,
+                    moveBelow: true,
+                });
             }, [], this);
         }
+    }
+
+    transitionOut(progress) {
+        const alpha = 1 - progress;
+        this.title.alpha = alpha;
+        this.texts.forEach(t => t.alpha = alpha);
     }
 }
 
