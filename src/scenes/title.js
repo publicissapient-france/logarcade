@@ -34,9 +34,12 @@ class SceneTitle extends Phaser.Scene {
 
     preload() {
         this.load.image('home', 'assets/backgrounds/HOME.png');
+        this.load.audio('jingle', ['assets/audio/Rise06.aif.wav']);
     }
 
     create() {
+        this.sound.add('jingle').play();
+
         this.home = this.add.image(0, 0, 'home').setScale(0).setOrigin(0.5, 0.5);
         this.home.setPosition(Screen.WIDTH / 2, Screen.HEIGHT / 2, 0, 0);
         this.time.delayedCall(3000, () => {

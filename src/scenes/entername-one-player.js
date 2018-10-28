@@ -21,7 +21,17 @@ class SceneEnterNameOnePlayer extends Phaser.Scene {
         this.nameValue = '';
     }
 
+    preload() {
+        this.load.audio('selected', ['assets/audio/Rise02.aif.wav']);
+        this.load.audio('deleted', ['assets/audio/Rise03.aif.wav']);
+        this.load.audio('ended', ['assets/audio/Rise04.aif.wav']);
+    }
+
     create() {
+        this.soundDeleted = this.sound.add('deleted');
+        this.soundSelected = this.sound.add('selected');
+        this.soundEnded = this.sound.add('ended');
+
         this.buttons.A = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[CONTROLS_P1.A]);
         this.buttons.B = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[CONTROLS_P1.B]);
         this.buttons.UP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[CONTROLS_P1.UP]);
@@ -98,6 +108,7 @@ class SceneEnterNameOnePlayer extends Phaser.Scene {
                 default:
                     if (this.nameValue.length < MAX_NAME_LENGTH) {
                         this.nameValue += this.selected;
+                        this.soundSelected.play();
                     }
             }
             this.updateName();
@@ -111,11 +122,13 @@ class SceneEnterNameOnePlayer extends Phaser.Scene {
     removeLastCharacter() {
         if (this.nameValue.length > 0) {
             this.nameValue = this.nameValue.substring(0, this.nameValue.length - 1);
+            this.soundDeleted.play();
         }
     }
 
     validateName() {
-        this.scene.start('sceneScoresOnePlayer')
+        this.scene.start('sceneScoresOnePlayer');
+        this.soundEnded.play();
     }
 }
 

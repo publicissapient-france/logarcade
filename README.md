@@ -52,3 +52,6 @@ Commiter et pusher.
 
 https://xebia-france.github.io/logarcade/
 
+# Credits
+https://opengameart.org/content/level-up-power-up-coin-get-13-sounds
+
