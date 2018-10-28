@@ -18,7 +18,7 @@ class SceneScoresTwoPlayers extends Phaser.Scene {
         this.bg.setZ(-1);
 
         const titleValue = 'TWO PLAYER MODE';
-        this.title = this.add.text(0, 30, titleValue, {font: `${fontSize}px Monospace`, boundsAlignH: "center"});
+        this.title = this.add.text(0, 30, titleValue, {font: `${fontSize}px VT323`, boundsAlignH: "center"});
         this.title.x = Screen.WIDTH / 2 - this.title.width / 2;
         this.title.alpha = 0;
 

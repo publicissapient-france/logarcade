@@ -35,7 +35,7 @@ class SceneScoresOnePlayer extends Phaser.Scene {
         this.bg.setZ(-1);
 
         const titleValue = 'ONE PLAYER MODE';
-        this.title = this.add.text(0, 30, titleValue, {font: `${fontSize}px Monospace`, boundsAlignH: "center"});
+        this.title = this.add.text(0, 30, titleValue, {font: `${fontSize}px VT323`, boundsAlignH: "center"});
         this.title.x = Screen.WIDTH / 2 - this.title.width / 2;
 
         this.texts = _(this.scores)
@@ -47,7 +47,7 @@ class SceneScoresOnePlayer extends Phaser.Scene {
                 const rank = Format.formatRank(i + 1);
                 const player = Format.formatPlayer(score.player);
                 const time = Format.formatTime(score.time);
-                const style = {font: `${fontSize}px Monospace`};
+                const style = {font: `${fontSize}px VT323`};
                 return this.add.text(x, y, `${rank}.   ${player}   ${time}`, style);
             })
             .value();

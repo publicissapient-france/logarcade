@@ -62,7 +62,7 @@ class SceneGameOnePlayer extends Phaser.Scene {
         this.invalidSound = this.sound.add('invalid');
 
         this.remainingTime = INITIAL_REMAINING_TIME;
-        this.time = this.add.text(290, 30, this.remainingTime, {font: `${fontSize}px Monospace`});
+        this.time = this.add.text(290, 30, this.remainingTime, {font: `${fontSize}px VT323`});
         this.start = new Date();
 
         this.nextQuestion();
@@ -95,7 +95,7 @@ class SceneGameOnePlayer extends Phaser.Scene {
             if (this.texts[i]) {
                 this.texts[i].setText(question.answers[i]);
             } else {
-                this.texts[i] = this.add.text(100, 125 + (column++ * 90), question.answers[i], {font: `${fontSize}px Monospace`});
+                this.texts[i] = this.add.text(100, 125 + (column++ * 90), question.answers[i], {font: `${fontSize}px VT323`});
             }
         }
     }
