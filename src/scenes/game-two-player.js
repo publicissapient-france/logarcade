@@ -7,16 +7,19 @@ class SceneGameTwoPlayers extends Phaser.Scene {
     }
 
     preload() {
-        this.add.text(Screen.WIDTH / 2, Screen.HEIGHT / 2, 'sceneGameTwoPlayers');
+        this.add.text(Screen.WIDTH / 2, Screen.HEIGHT / 2, 'sceneGameTwoPlayers', {font:"bold 24px VT323"});
     }
 
     create() {
 
-        this.myHealthBar = new HealthBar(this, { x: Screen.WIDTH / 2, y: 200, bar: {color : 0xFF6347, direction: -1 }});
-        console.log("HealthBar",this.myHealthBar);
+        this.healthbarPlayerOne = new HealthBar(this, { x: 30, y: 30, bar: {color : 0xFF6347, direction: -1 }});
+        console.log("healthbarPlayerOne",this.healthbarPlayerOne);
+        this.healthbarPlayerOne.setProgress(50);
 
-        this.myHealthBar.setPosition(30,30);
-        this.myHealthBar.setProgress(50);
+        this.healthbarPlayerTwo = new HealthBar(this, { x: Screen.WIDTH - 280, y: 30, bar: {color : 0xFF6347 }});
+        console.log("healthbarPlayerTwo",this.healthbarPlayerTwo);
+
+        this.healthbarPlayerTwo.setProgress(100);
     }
 }
 
