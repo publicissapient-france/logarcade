@@ -8,10 +8,24 @@ class SceneDemo extends Phaser.Scene {
 
     preload() {
         this.add.text(Screen.WIDTH / 2, Screen.HEIGHT / 2, 'DEMO');
+        this.load.image('kol', 'assets/backgrounds/KOL.png');
     }
 
     create() {
-        this.time.delayedCall(3000, () => {
+        this.kol = this.add.image(0, 0, 'kol').setOrigin(0.5, 0.5).setScale(0.25, 0.25);
+        this.kol.setAlpha(0.5);
+        this.kol.setPosition(Screen.WIDTH / 2, Screen.HEIGHT / 2, 0, 0);
+
+        this.tweens.add({
+            targets: this.kol,
+            alpha: 1,
+            ease: 'Sine.easeInOut',
+            yoyo: true,
+            duration: 1500,
+            loop: 10,
+        });
+
+        this.time.delayedCall(10000, () => {
             this.scene.start('sceneScoresOnePlayer')
         }, [], this);
         this.p1start = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[CONTROLS_P1.START]);
