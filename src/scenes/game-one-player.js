@@ -5,6 +5,8 @@ const {INITIAL_REMAINING_TIME} = require('../game');
 const Engine = require('../engine');
 const _ = require('lodash');
 
+const fontSize = 36;
+
 class SceneGameOnePlayer extends Phaser.Scene {
     constructor() {
         super({key: 'sceneGameOnePlayer'});
@@ -14,40 +16,54 @@ class SceneGameOnePlayer extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('knighthawks', 'assets/fonts/knighthawks-font.png');
+        this.load.audio('theme', ['assets/audio/Retrojäbä_-_Retrojäbä_-_sbrp_tutorial_remix.mp3']);
 
-        this.load.audio('theme', [
-            'assets/audio/Retrojäbä_-_Retrojäbä_-_sbrp_tutorial_remix.mp3'
-        ]);
+        this.load.audio('invalid', ['assets/audio/Jingle 011.wav']);
+        this.load.audio('valid', ['assets/audio/Notification 2.wav']);
+
         this.quiz.forEach(l => {
             console.log(`Loading ${l.validAnswer.name} ... ${l.validAnswer.file}`);
-            return this.load.image(l.validAnswer.name, `assets/logos/${l.validAnswer.file}`);
+            return this.load.image(l.validAnswer.name, `assets/logos/re_${l.validAnswer.file}`);
         });
+
+        this.load.image('bg', 'assets/backgrounds/BG.png');
+
+        this.load.image('BTN_A', 'assets/elements/BTN_A.png');
+        this.load.image('BTN_B', 'assets/elements/BTN_B.png');
+        this.load.image('BTN_C', 'assets/elements/BTN_C.png');
+        this.load.image('BTN_D', 'assets/elements/BTN_D.png');
+
+        this.load.image('WINDOW', 'assets/elements/WINDOW.png');
 
         this.buttons = {};
     }
 
     create() {
+        this.bg = this.add.image(0, 0, 'bg').setOrigin(0);
+        this.bg.setScale(2);
+        this.bg.setZ(-1);
+
         this.buttons.A = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[CONTROLS_P1.A]);
         this.buttons.B = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[CONTROLS_P1.B]);
         this.buttons.C = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[CONTROLS_P1.C]);
         this.buttons.D = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[CONTROLS_P1.D]);
 
+        this.add.image(50, 150, 'BTN_A').setScale(2);
+        this.add.image(50, 240, 'BTN_B').setScale(2);
+        this.add.image(50, 330, 'BTN_C').setScale(2);
+        this.add.image(50, 420, 'BTN_D').setScale(2);
+
+        this.add.image(450, 280, 'WINDOW').setScale(2);
+
         var music = this.sound.add('theme');
         music.play();
+
+        this.validSound = this.sound.add('valid');
+        this.invalidSound = this.sound.add('invalid');
+
         this.remainingTime = INITIAL_REMAINING_TIME;
-        this.time = this.add.text(400, 50, this.remainingTime);
+        this.time = this.add.text(290, 30, this.remainingTime, {font: `${fontSize}px Monospace`});
         this.start = new Date();
-
-        const config = {
-            image: 'knighthawks',
-            width: 32,
-            height: 25,
-            chars: Phaser.GameObjects.RetroFont.TEXT_SET2,
-            charsPerRow: 10
-        };
-
-        this.cache.bitmapFont.add('knighthawks', Phaser.GameObjects.RetroFont.Parse(this, config));
 
         this.nextQuestion();
 
@@ -69,8 +85,7 @@ class SceneGameOnePlayer extends Phaser.Scene {
         if (this.logo) {
             this.logo.setTexture(this.quiz[this.currentQuestion].validAnswer.name);
         } else {
-            this.logo = this.add.image(Screen.WIDTH / 2, Screen.HEIGHT / 2, this.quiz[this.currentQuestion].validAnswer.name);
-            this.logo.setScale(0.1);
+            this.logo = this.add.image(450, 280, this.quiz[this.currentQuestion].validAnswer.name).setScale(6);
         }
 
         let column = 0;
@@ -85,9 +100,9 @@ class SceneGameOnePlayer extends Phaser.Scene {
         };
         for (let i = 0; i < 4; i++) {
             if (this.texts[i]) {
-                this.texts[i].setText(question.answers[i].toUpperCase());
+                this.texts[i].setText(question.answers[i]);
             } else {
-                this.texts[i] = this.add.dynamicBitmapText(Screen.WIDTH * column++ / 4, 450, 'knighthawks', question.answers[i].toUpperCase()).setScale(0.8);
+                this.texts[i] = this.add.text(100, 125 + (column++ * 90), question.answers[i], {font: `${fontSize}px Monospace`});
             }
         }
     }
@@ -109,28 +124,25 @@ class SceneGameOnePlayer extends Phaser.Scene {
             this.onKeyDown(this.texts[3]);
             this.nextQuestion();
         }
-        const elapsedTime = (new Date().getTime() - this.start.getTime()) / 1000;
-        this.remainingTime = Math.round(INITIAL_REMAINING_TIME - elapsedTime);
-        this.time.setText(this.remainingTime);
-
-
-        //DUAL GAME
         if (Phaser.Input.Keyboard.JustDown(this.p2start)) {
             this.scene.start('sceneGameTwoPlayers');
         }
 
 
+
+        const elapsedTime = (new Date().getTime() - this.start.getTime()) / 1000;
+        this.remainingTime = Math.round(INITIAL_REMAINING_TIME - elapsedTime);
+        this.time.setText(_.padStart(this.remainingTime, 2, '0'));
     }
 
     onKeyDown(text) {
-        text.setTint(0xff00ff, 0xffff00, 0x0000ff, 0xff0000);
-        setTimeout(() => {
-            text.clearTint();
-        }, 150);
+        const valid = text._text === this.quiz[this.currentQuestion].validAnswer.name;
+        if (valid) {
+            this.validSound.play();
+        } else {
+            this.invalidSound.play();
+        }
     }
-
-
-
 }
 
 module.exports = SceneGameOnePlayer;

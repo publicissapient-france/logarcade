@@ -27,7 +27,6 @@ module.exports = [
     {file: 'gitlab.png', name: 'gitlab'},
     {file: 'glusterfs.png', name: 'glusterfs'},
     {file: 'gocd.png', name: 'gocd'},
-    {file: 'Google', name: 'Google'},
     {file: 'google-home-glamour-v1.png', name: 'google-home'},
     {file: 'go.png', name: 'go'},
     {file: 'grafana.png', name: 'grafana'},

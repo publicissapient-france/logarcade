@@ -56,7 +56,6 @@ HealthBar.prototype.drawBox = function(){
     this.box.lineStyle(this.config.box.borderSize, 0xFFFFFF, 0.5);
     this.box.strokeRect(this.config.x, this.config.y, this.config.width, this.config.height);
 
-
     console.log("we draw box !");
 }
 
