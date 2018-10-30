@@ -61,3 +61,6 @@ typings/
 .next
 
 .idea/
+
+logarcade-win32-ia32/
+dist/
