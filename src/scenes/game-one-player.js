@@ -5,8 +5,6 @@ const {INITIAL_REMAINING_TIME} = require('../game');
 const Engine = require('../engine');
 const _ = require('lodash');
 
-const fontSize = 36;
-
 class SceneGameOnePlayer extends Phaser.Scene {
     constructor() {
         super({key: 'sceneGameOnePlayer'});
@@ -33,7 +31,7 @@ class SceneGameOnePlayer extends Phaser.Scene {
         this.load.image('BTN_C', 'assets/elements/BTN_C.png');
         this.load.image('BTN_D', 'assets/elements/BTN_D.png');
 
-        this.load.image('WINDOW', 'assets/elements/WINDOW.png');
+        this.load.image('WINDOW', 'assets/elements/WINDOW_V2.png');
 
         this.buttons = {};
     }
@@ -62,7 +60,7 @@ class SceneGameOnePlayer extends Phaser.Scene {
         this.invalidSound = this.sound.add('invalid');
 
         this.remainingTime = INITIAL_REMAINING_TIME;
-        this.time = this.add.text(290, 30, this.remainingTime, {font: `${fontSize}px VT323`});
+        this.time = this.add.text(290, 30, this.remainingTime, {font: `${Screen.FONT_SIZE}px VT323`});
         this.start = new Date();
 
         this.nextQuestion();
@@ -95,7 +93,7 @@ class SceneGameOnePlayer extends Phaser.Scene {
             if (this.texts[i]) {
                 this.texts[i].setText(question.answers[i]);
             } else {
-                this.texts[i] = this.add.text(100, 125 + (column++ * 90), question.answers[i], {font: `${fontSize}px VT323`});
+                this.texts[i] = this.add.text(100, 125 + (column++ * 90), question.answers[i], {font: `${Screen.FONT_SIZE}px VT323`});
             }
         }
     }
