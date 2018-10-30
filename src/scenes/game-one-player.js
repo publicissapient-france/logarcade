@@ -14,7 +14,7 @@ class SceneGameOnePlayer extends Phaser.Scene {
     }
 
     preload() {
-        this.load.audio('theme', ['assets/audio/Retrojäbä_-_Retrojäbä_-_sbrp_tutorial_remix.mp3']);
+        this.load.audio('theme', ['assets/audio/remix.mp3']);
 
         this.load.audio('invalid', ['assets/audio/Jingle 011.wav']);
         this.load.audio('valid', ['assets/audio/Notification 2.wav']);
