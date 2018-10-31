@@ -21,7 +21,7 @@ HealthBar.prototype.setupConfiguration = function (barConfig){
 }
 HealthBar.prototype.mergeWithDefaultConfiguration = function(newConfig){
     var defaultConfig  = {
-        width : 250,
+        width : 300,
         height : 35,
         x : 0,
         y : 0,
@@ -52,11 +52,9 @@ function mergeObjects(targetObj, newObj){
 HealthBar.prototype.drawBox = function(){
     this.box.clear();
     this.box.fillStyle(this.config.box.color, 0.8);
-    this.box.fillRect(this.config.x, this.config.y, this.config.width, this.config.height);
+    this.box.fillRoundedRect(this.config.x, this.config.y, this.config.width, this.config.height, 6);
     this.box.lineStyle(this.config.box.borderSize, 0xFFFFFF, 0.5);
-    this.box.strokeRect(this.config.x, this.config.y, this.config.width, this.config.height);
-
-    console.log("we draw box !");
+    this.box.strokeRoundedRect(this.config.x, this.config.y, this.config.width, this.config.height, 6);
 }
 
 
@@ -64,13 +62,11 @@ HealthBar.prototype.drawHealthBar = function(){
     this.bar.clear();
 
     if(this.config.bar.direction == 1){
-        this.bar.fillStyle(this.config.bar.color, 1);
+        this.bar.fillStyle( this.config.bar.color, 1);
         this.bar.fillRect(this.config.x + this.config.box.borderSize, this.config.y  + this.config.box.borderSize, this.config.bar.progress, this.config.height - 2*this.config.box.borderSize);
-        console.log("we draw bar Left to Right !");
     }else{
         this.bar.fillStyle(this.config.bar.color, 1);
         this.bar.fillRect(this.config.x + this.config.width - this.config.box.borderSize, this.config.y + this.config.box.borderSize, - this.config.bar.progress, this.config.height  - 2*this.config.box.borderSize);
-        console.log("we draw bar Right to Left !");
     }
 }
 
