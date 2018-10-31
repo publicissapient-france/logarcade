@@ -33,13 +33,12 @@ class SceneScoresTwoPlayers extends Phaser.Scene {
         this.bg.setScale(Screen.ZOOM, Screen.ZOOM);
         this.bg.setZ(-1);
 
-        const titleValue = '          SCORE RANKING          ';
+        const titleValue = '         SCORE RANKING 2P         ';
         this.title = this.add.text(0, 25, titleValue, {font: `${Screen.FONT_SIZE}px Impact`});
         this.title
             .setBackgroundColor('#ee4239')
             .setFontStyle('italic')
             .setDisplaySize(Screen.WIDTH, Screen.FONT_SIZE);
-        this.title.alpha = CYCLE ? 0 : 1;
 
         const ranking = this.computeRanking();
         this.addScoreLines();
@@ -49,12 +48,8 @@ class SceneScoresTwoPlayers extends Phaser.Scene {
         this.addScores(scores);
 
         if (CYCLE) {
-            this.time.delayedCall(5000, () => {
-                this.scene.start('sceneLogo')
-            }, [], this);
+            this.time.delayedCall(5000, () => this.scene.start('sceneLogo'), [], this);
         }
-
-        this.events.on('transitionstart', this.transitionStart, this);
     }
 
     addScores(scores) {
@@ -157,10 +152,6 @@ class SceneScoresTwoPlayers extends Phaser.Scene {
                 loses: losers[name] ? losers[name].length : 0,
             }))
             .value();
-    }
-
-    transitionStart(fromScene, progress) {
-        this.title.alpha = progress;
     }
 }
 
