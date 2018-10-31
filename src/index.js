@@ -1,3 +1,4 @@
+const SceneLogo = require('./scenes/logo');
 const SceneTitle = require('./scenes/title');
 const SceneDemo = require('./scenes/demo');
 const SceneScoresOnePlayer = require('./scenes/hiscores-one-player');
@@ -15,7 +16,7 @@ const config = {
     height: Screen.HEIGHT,
     scene: [
         // SceneEnterNameOnePlayer,
-
+        SceneLogo,
         SceneTitle,
         SceneDemo,
         SceneScoresOnePlayer,

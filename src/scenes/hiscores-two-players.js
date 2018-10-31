@@ -92,7 +92,7 @@ class SceneScoresTwoPlayers extends Phaser.Scene {
 
         if (CYCLE) {
             this.time.delayedCall(3000, () => {
-                this.scene.start('sceneTitle')
+                this.scene.start('sceneLogo')
             }, [], this);
         }
 
