@@ -1,4 +1,6 @@
 const Screen = require('../screen');
+const {CONTROLS_P1} = require('../controls');
+
 const _ = require('lodash');
 
 class SceneLogo extends Phaser.Scene {
@@ -15,6 +17,8 @@ class SceneLogo extends Phaser.Scene {
     }
 
     create() {
+        this.p1start = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[CONTROLS_P1.START]);
+
         const data = {
             key: 'snooze',
             frames: [],
@@ -29,6 +33,12 @@ class SceneLogo extends Phaser.Scene {
 
         this.time.delayedCall(2000, () => this.scene.start('sceneTitle'), [], this);
 
+    }
+
+    update() {
+        if (Phaser.Input.Keyboard.JustDown(this.p1start)) {
+            this.scene.start('sceneGameOnePlayer');
+        }
     }
 
 
