@@ -175,7 +175,15 @@ class SceneGameTwoPlayers extends Phaser.Scene {
             if (this.texts[i]) {
                 this.texts[i].setText(question.answers[i]);
             } else {
-                this.texts[i] = this.add.text(100, 125 + (column++ * 90), question.answers[i], {font: `${fontSize}px VT323`});
+                this.texts[i] = this.make.text({
+                    x : 100,
+                    y : 125 + (column++ * 90),
+                    text : question.answers[i],
+                    style : {
+                        font: `${fontSize}px VT323`,
+                        wordWrap : {width : 200, useAdvancedWrap: true }
+                    }
+                });
             }
         }
     }
