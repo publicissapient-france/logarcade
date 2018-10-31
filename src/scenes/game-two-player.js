@@ -7,7 +7,10 @@ const Engine = require('../engine');
 const {HealthBar} = require('../healthbar');
 
 const fontSize = 36;
-var power = 10;
+var power;
+
+const color_P1 = 0xFBB03B;
+const color_P2 = 0x6C1D5F;
 
 class SceneGameTwoPlayers extends Phaser.Scene {
     constructor() {
@@ -44,6 +47,7 @@ class SceneGameTwoPlayers extends Phaser.Scene {
             P1: {},
             P2: {}
         };
+        this.feedback = {};
     }
 
     create() {
@@ -99,6 +103,40 @@ class SceneGameTwoPlayers extends Phaser.Scene {
             repeat: 0
         })
 
+
+        this.feedback.A = this.add.graphics();
+        this.feedback.A.beginPath();
+        this.feedback.A.fillStyle(0x000000);
+        this.feedback.A.arc(52, 313, 42, Phaser.Math.DegToRad(0), Phaser.Math.DegToRad(180), false, 0.2);
+        this.feedback.A.setScale(1, 0.5);
+        this.feedback.A.fillPath();
+        this.feedback.A.alpha = 0;
+
+        this.feedback.B = this.add.graphics();
+        this.feedback.B.beginPath();
+        this.feedback.B.fillStyle(0x000000);
+        this.feedback.B.arc(52, 493, 42, Phaser.Math.DegToRad(0), Phaser.Math.DegToRad(180), false, 0.2);
+        this.feedback.B.setScale(1, 0.5);
+        this.feedback.B.fillPath();
+        this.feedback.B.alpha = 0;
+
+        this.feedback.C = this.add.graphics();
+        this.feedback.C.beginPath();
+        this.feedback.C.fillStyle(0x000000);
+        this.feedback.C.arc(52, 673, 42, Phaser.Math.DegToRad(0), Phaser.Math.DegToRad(180), false, 0.2);
+        this.feedback.C.setScale(1, 0.5);
+        this.feedback.C.fillPath();
+        this.feedback.C.alpha = 0;
+
+        this.feedback.D = this.add.graphics();
+        this.feedback.D.beginPath();
+        this.feedback.D.fillStyle(0x000000);
+        this.feedback.D.arc(52, 853, 42, Phaser.Math.DegToRad(0), Phaser.Math.DegToRad(180), false, 0.2);
+        this.feedback.D.setScale(1, 0.5);
+        this.feedback.D.fillPath();
+        this.feedback.D.alpha = 0;
+
+
         this.BTN_A = this.add.sprite(50, 150, 'BTN_A').setScale(2);
         this.BTN_B = this.add.sprite(50, 240, 'BTN_B').setScale(2);
         this.BTN_C = this.add.sprite(50, 330, 'BTN_C').setScale(2);
@@ -111,28 +149,20 @@ class SceneGameTwoPlayers extends Phaser.Scene {
             x: 25,
             y: 27,
             width: 270,
-            bar: {color: 0xEE4239, direction: -1}
+            bar: {color: color_P1, direction: -1}
         });
-        console.log("healthbarPlayerOne", this.healthbarPlayerOne);
 
         this.healthbarPlayerTwo = new HealthBar(this, {
             x: Screen.WIDTH - 295,
             y: 27,
             width: 270,
-            bar: {color: 0xEE4239, direction: 1}
+            bar: {color: color_P2, direction: 1}
         });
-        console.log("healthbarPlayerTwo", this.healthbarPlayerTwo);
 
+        this.health_P2 = { state: 270 - 4 };
+        this.health_P1 = { state: 270 - 4 };
 
-        this.health_P2 = {
-            state: 270 - 4
-        }
-        this.health_P1 = {
-            state: 270 - 4
-        }
-
-
-        console.log('this.healthbarPlayerOne', this.healthbarPlayerOne);
+        power = this.health_P1.state / (this.quiz.length);
 
         this.validSound = this.sound.add('valid');
         this.invalidSound = this.sound.add('invalid');
@@ -145,7 +175,6 @@ class SceneGameTwoPlayers extends Phaser.Scene {
         this.start = new Date();
 
         this.nextQuestion();
-
     }
 
     nextQuestion() {
@@ -176,12 +205,12 @@ class SceneGameTwoPlayers extends Phaser.Scene {
                 this.texts[i].setText(question.answers[i]);
             } else {
                 this.texts[i] = this.make.text({
-                    x : 100,
-                    y : 125 + (column++ * 90),
-                    text : question.answers[i],
-                    style : {
+                    x: 100,
+                    y: 125 + (column++ * 90),
+                    text: question.answers[i],
+                    style: {
                         font: `${fontSize}px VT323`,
-                        wordWrap : {width : 200, useAdvancedWrap: true }
+                        wordWrap: {width: 200, useAdvancedWrap: true}
                     }
                 });
             }
@@ -194,38 +223,45 @@ class SceneGameTwoPlayers extends Phaser.Scene {
         this.healthbarPlayerOne.setProgress(this.health_P1.state);
         this.healthbarPlayerTwo.setProgress(this.health_P2.state);
 
-
         if (Phaser.Input.Keyboard.JustDown(this.buttons.P1.A)) {
             this.onKeyDown(this.texts[0], 1);
+            this.getFeedBack(this.feedback.A, color_P1);
             this.nextQuestion();
         }
         if (Phaser.Input.Keyboard.JustDown(this.buttons.P1.B)) {
             this.onKeyDown(this.texts[1], 1);
+            this.getFeedBack(this.feedback.B, color_P1);
             this.nextQuestion();
         }
         if (Phaser.Input.Keyboard.JustDown(this.buttons.P1.C)) {
             this.onKeyDown(this.texts[2], 1);
+            this.getFeedBack(this.feedback.C, color_P1);
             this.nextQuestion();
         }
         if (Phaser.Input.Keyboard.JustDown(this.buttons.P1.D)) {
             this.onKeyDown(this.texts[3], 1);
+            this.getFeedBack(this.feedback.D, color_P1);
             this.nextQuestion();
         }
 
         if (Phaser.Input.Keyboard.JustDown(this.buttons.P2.A)) {
             this.onKeyDown(this.texts[0], 2);
+            this.getFeedBack(this.feedback.A, color_P2);
             this.nextQuestion();
         }
         if (Phaser.Input.Keyboard.JustDown(this.buttons.P2.B)) {
             this.onKeyDown(this.texts[1], 2);
+            this.getFeedBack(this.feedback.B, color_P2);
             this.nextQuestion();
         }
         if (Phaser.Input.Keyboard.JustDown(this.buttons.P2.C)) {
             this.onKeyDown(this.texts[2], 2);
+            this.getFeedBack(this.feedback.C, color_P2);
             this.nextQuestion();
         }
         if (Phaser.Input.Keyboard.JustDown(this.buttons.P2.D)) {
             this.onKeyDown(this.texts[3], 2);
+            this.getFeedBack(this.feedback.D, color_P2);
             this.nextQuestion();
         }
 
@@ -241,31 +277,36 @@ class SceneGameTwoPlayers extends Phaser.Scene {
         }
 
 
-        if ((this.buttons.P1.A).isDown) {
-            console.log('A is down !');
-            console.log(this.health_P2.state);
+        if ((this.buttons.P1.A).isDown || (this.buttons.P2.A).isDown) {
             this.BTN_A.play('A_active');
         }
-        if ((this.buttons.P1.B).isDown) {
-            console.log('B is down !');
+        if ((this.buttons.P1.B).isDown || (this.buttons.P2.B).isDown) {
             this.BTN_B.play('B_active');
-            console.log(this.health_P2.state);
-
         }
-        if ((this.buttons.P1.C).isDown) {
-            console.log('C is down !');
+        if ((this.buttons.P1.C).isDown || (this.buttons.P2.C).isDown) {
             this.BTN_C.play('C_active');
-            console.log(this.health_P2.state);
-
         }
-        if ((this.buttons.P1.D).isDown) {
-            console.log('D is down !');
+        if ((this.buttons.P1.D).isDown || (this.buttons.P2.D).isDown) {
             this.BTN_D.play('D_active');
-            console.log(this.health_P2.state);
-
         }
+    }
 
+    getFeedBack(target, color) {
+        target.fillStyle(color);
+        target.lineStyle(2, color);
+        target.fillPath();
+        target.strokePath();
 
+        this.tweens.timeline({
+            targets: target,
+            ease: 'Power1',
+            duration: 100,
+            tweens: [
+                {
+                    alpha: 1,
+                }],
+            yoyo: true
+        });
     }
 
     onKeyDown(text, player) {
@@ -281,7 +322,7 @@ class SceneGameTwoPlayers extends Phaser.Scene {
                     duration: 1000,
                     tweens: [
                         {
-                            state: this.health_P2.state - 10
+                            state: this.health_P2.state - power
                         }]
                 });
             } else {
@@ -299,8 +340,6 @@ class SceneGameTwoPlayers extends Phaser.Scene {
             this.invalidSound.play();
         }
     }
-
-
 }
 
 module.exports = SceneGameTwoPlayers;
