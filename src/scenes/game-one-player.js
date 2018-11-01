@@ -1,6 +1,5 @@
 const {CONTROLS_P1, CONTROLS_P2} = require('../controls');
 const LOGOS = require('../domain/logos');
-const {INITIAL_REMAINING_TIME} = require('../domain/game');
 const Engine = require('../domain/engine');
 const Game = require('../domain/game');
 const _ = require('lodash');
