@@ -8,7 +8,7 @@ var HealthBar = function(game, barConfig){
     this.setupConfiguration(barConfig);  //install config
     //this.setPosition(this.config.x, this.config.y); //set bar position
     this.drawBox();  //draw the hidded part of bar , his background
-   // this.drawHealthBar();   // draw the part of bar which represent health
+    this.drawHealthBar();   // draw the part of bar which represent health
 };
 
 
@@ -21,12 +21,13 @@ HealthBar.prototype.setupConfiguration = function (barConfig){
 }
 HealthBar.prototype.mergeWithDefaultConfiguration = function(newConfig){
     var defaultConfig  = {
-        width : 250,
+        width : 300,
         height : 35,
         x : 0,
         y : 0,
         box:{
-            color : 0x222222
+            color : 0x222222,
+            borderSize : 2
         },
         bar:{
             color: 0xFF6347,
@@ -51,8 +52,9 @@ function mergeObjects(targetObj, newObj){
 HealthBar.prototype.drawBox = function(){
     this.box.clear();
     this.box.fillStyle(this.config.box.color, 0.8);
-    this.box.fillRect(this.config.x, this.config.y, this.config.width, this.config.height);
-    console.log("we draw box !");
+    this.box.fillRoundedRect(this.config.x, this.config.y, this.config.width, this.config.height, 6);
+    this.box.lineStyle(this.config.box.borderSize, 0xFFFFFF, 0.5);
+    this.box.strokeRoundedRect(this.config.x, this.config.y, this.config.width, this.config.height, 6);
 }
 
 
@@ -60,13 +62,11 @@ HealthBar.prototype.drawHealthBar = function(){
     this.bar.clear();
 
     if(this.config.bar.direction == 1){
-        this.bar.fillStyle(this.config.bar.color, 1);
-        this.bar.fillRect(this.config.x, this.config.y, this.config.bar.progress, this.config.height);
-        console.log("we draw bar Left to Right !");
+        this.bar.fillStyle( this.config.bar.color, 1);
+        this.bar.fillRect(this.config.x + this.config.box.borderSize, this.config.y  + this.config.box.borderSize, this.config.bar.progress, this.config.height - 2*this.config.box.borderSize);
     }else{
         this.bar.fillStyle(this.config.bar.color, 1);
-        this.bar.fillRect(this.config.x + this.config.width, this.config.y, - this.config.bar.progress, this.config.height);
-        console.log("we draw bar Right to Left !");
+        this.bar.fillRect(this.config.x + this.config.width - this.config.box.borderSize, this.config.y + this.config.box.borderSize, - this.config.bar.progress, this.config.height  - 2*this.config.box.borderSize);
     }
 }
 

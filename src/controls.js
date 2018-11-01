@@ -2,7 +2,7 @@ const controlsPlayer1_Keyboard = {
     A: 'A',
     B: 'Z',
     C: 'E',
-    D: 'T',
+    D: 'R',
     START: 'SPACE',
     UP: 'UP',
     DOWN: 'DOWN',
