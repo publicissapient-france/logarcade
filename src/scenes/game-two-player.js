@@ -1,10 +1,10 @@
 const {CONTROLS_P1, CONTROLS_P2} = require('../controls');
-const Screen = require('../screen');
-const LOGOS = require('../logos');
-const {INITIAL_REMAINING_TIME} = require('../game');
-const Engine = require('../engine');
+const Screen = require('../components/screen');
+const LOGOS = require('../domain/logos');
+const {INITIAL_REMAINING_TIME} = require('../domain/game');
+const Engine = require('../domain/engine');
 
-const {HealthBar} = require('../healthbar');
+const {HealthBar} = require('../components/healthbar');
 
 var power;
 

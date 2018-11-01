@@ -7,7 +7,7 @@ const SceneGameOnePlayer = require('./scenes/game-one-player');
 const SceneGameTwoPlayers = require('./scenes/game-two-player');
 const SceneEnterNameOnePlayer = require('./scenes/entername-one-player');
 
-const Screen = require('./screen');
+const Screen = require('./components/screen');
 
 const config = {
     type: Phaser.AUTO,
