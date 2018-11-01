@@ -2,10 +2,8 @@ const Screen = require('../screen');
 
 class ScoreLines {
 
-    constructor(props) {
-        this.load = props.load;
-        this.add = props.add;
-        this.tweens = props.tweens;
+    constructor(game) {
+        Object.assign(this, game);
     }
 
     preload() {

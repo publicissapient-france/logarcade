@@ -3,8 +3,7 @@ const {CONTROLS_P1, CONTROLS_P2} = require('../controls');
 class StartGameAction {
 
     constructor(game) {
-        this.input = game.input;
-        this.scene = game.scene;
+        Object.assign(this, game);
     }
 
     create() {

@@ -2,8 +2,8 @@ const Screen = require('../screen');
 
 class TitleBanner {
 
-    constructor(props) {
-        this.add = props.add;
+    constructor(game) {
+        Object.assign(this, game);
     }
 
     create(titleValue) {

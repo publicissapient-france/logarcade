@@ -2,9 +2,8 @@ const Screen = require('../screen');
 
 class Background {
 
-    constructor(props) {
-        this.load = props.load;
-        this.add = props.add;
+    constructor(game) {
+        Object.assign(this, game);
     }
 
     preload() {
