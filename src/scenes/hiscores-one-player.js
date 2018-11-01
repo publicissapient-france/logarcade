@@ -1,20 +1,16 @@
 const _ = require('lodash');
 const Screen = require('../screen');
 const Format = require('../format');
+const Game = require('../game');
 
 const CYCLE = true;
 
 const DEFAULT_SCORES = [
-    {player: 'MPAQUE', time: 99840},
-    {player: 'JSMADJA', time: 99830},
-    {player: 'DATTALI', time: 99550},
-    {player: 'PTIRMAN', time: 99450},
-    {player: 'ABEAUCHA', time: 99240},
-    {player: 'CNGUYEN', time: 99340},
-    {player: 'JJOUANNE', time: 99090},
-    {player: 'FDESROUS', time: 99370},
-    {player: 'KKERNINO', time: 99290},
-    {player: 'MTRACCO', time: 99730},
+    {player: 'MPAQUE', time: Game.INITIAL_REMAINING_TIME * 1000},
+    {player: 'JSMADJA', time: Game.INITIAL_REMAINING_TIME * 1000},
+    {player: 'DATTALI', time: Game.INITIAL_REMAINING_TIME * 1000},
+    {player: 'PTIRMAN', time: Game.INITIAL_REMAINING_TIME * 1000},
+    {player: 'ABEAUCHA', time: Game.INITIAL_REMAINING_TIME * 1000},
 ];
 
 class SceneScoresOnePlayer extends Phaser.Scene {
@@ -22,6 +18,7 @@ class SceneScoresOnePlayer extends Phaser.Scene {
     constructor() {
         super({key: 'sceneScoresOnePlayer'});
         this.scores = localStorage.getItem('1P_scores') || DEFAULT_SCORES;
+        localStorage.setItem('1P_scores', JSON.stringify(this.scores));
     }
 
     preload() {
