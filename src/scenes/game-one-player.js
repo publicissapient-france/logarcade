@@ -149,7 +149,7 @@ class SceneGameOnePlayer extends Phaser.Scene {
 
             ['A', 'B', 'C', 'D']
                 .forEach((button, i) => {
-                    if (Phaser.Input.Keyboard.JustDown(this.buttons[button])) {
+                    if (this.currentQuestion >= 0  && Phaser.Input.Keyboard.JustDown(this.buttons[button])) {
                         this.onKeyDown(this.components.answers.texts[i]);
                         this.components.buttons.getFeedBack(button, Colors.color_P1);
                         this.nextQuestion();

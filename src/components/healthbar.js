@@ -17,9 +17,9 @@ HealthBar.prototype.constructor = HealthBar
 
 HealthBar.prototype.setupConfiguration = function (barConfig){
     //each parameter has a default value
-    this.config = this.mergeWithDefaultConfiguration(barConfig);
+    this.config = HealthBar.mergeWithDefaultConfiguration(barConfig);
 }
-HealthBar.prototype.mergeWithDefaultConfiguration = function(newConfig){
+HealthBar.mergeWithDefaultConfiguration = function(newConfig){
     var defaultConfig  = {
         width : 300,
         height : 35,
