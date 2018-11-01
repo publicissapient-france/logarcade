@@ -7,7 +7,7 @@ class TitleBanner {
     }
 
     create(titleValue) {
-        this.title = this.add.text(0, 25, '         ' + titleValue + '         ', {font: `${Screen.FONT_SIZE}px Impact`});
+        this.title = this.add.text(0, 25,  titleValue, {font: `${Screen.FONT_SIZE}px Impact`});
         this.title
             .setBackgroundColor('#ee4239')
             .setFontStyle('italic')

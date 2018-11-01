@@ -32,7 +32,7 @@ class SceneScoresTwoPlayers extends Phaser.Scene {
         this.actions.startGame.create();
 
         this.components.background.create();
-        this.components.titleBanner.create('SCORE RANKING 2P');
+        this.components.titleBanner.create('      SCORE RANKING 2P      ');
         this.components.scoreLines.create(this.computeScores());
 
         this.time.delayedCall(5000, () => this.scene.start('sceneLogo'), [], this);

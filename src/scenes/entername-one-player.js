@@ -1,3 +1,11 @@
+const _ = require('lodash');
+const Screen = require('../screen');
+const Game = require('../game');
+const {CONTROLS_P1} = require('../controls');
+const Ranking = require('../ranking');
+const Background = require('../components/background');
+const TitleBanner = require('../components/title-banner');
+
 const LETTERS = [
     'A', 'B', 'C', 'D', 'E', 'F',
     'G', 'H', 'I', 'J', 'K', 'L',
@@ -6,20 +14,16 @@ const LETTERS = [
     'Y', 'Z', 'DEL', 'END',
 ];
 
-const _ = require('lodash');
-const Screen = require('../screen');
-const {CONTROLS_P1} = require('../controls');
-const fontSize = 36;
-const MAX_NAME_LENGTH = 8;
-const Ranking = require('../ranking');
-
 class SceneEnterNameOnePlayer extends Phaser.Scene {
     constructor() {
         super({key: 'sceneEnterNameOnePlayer'});
     }
 
     preload() {
-        this.load.image('bg', 'assets/backgrounds/BG.png');
+        this.components = {
+            background: new Background(this),
+            titleBanner: new TitleBanner(this),
+        };
 
         this.load.audio('selected', ['assets/audio/Rise02.aif.wav']);
         this.load.audio('deleted', ['assets/audio/Rise03.aif.wav']);
@@ -34,16 +38,8 @@ class SceneEnterNameOnePlayer extends Phaser.Scene {
 
         this.score = data.score;
 
-        this.bg = this.add.image(0, 0, 'bg').setOrigin(0);
-        this.bg.setScale(Screen.ZOOM, Screen.ZOOM);
-        this.bg.setZ(-1);
-
-        const titleValue = '         ENTER YOUR NAME         ';
-        this.title = this.add.text(0, 25, titleValue, {font: `${Screen.FONT_SIZE}px Impact`});
-        this.title
-            .setBackgroundColor('#ee4239')
-            .setFontStyle('italic')
-            .setDisplaySize(Screen.WIDTH, Screen.FONT_SIZE);
+        this.components.background.create();
+        this.components.titleBanner.create('      ENTER YOUR NAME      ');
 
         this.soundDeleted = this.sound.add('deleted');
         this.soundSelected = this.sound.add('selected');
@@ -63,11 +59,11 @@ class SceneEnterNameOnePlayer extends Phaser.Scene {
 
         this.letters = _(LETTERS)
             .map((letter, i) => {
-                let x = (i % 6) * (fontSize * 2) + 150;
+                let x = (i % 6) * (Screen.FONT_SIZE * 2) + 75;
                 if (i > 26) {
-                    x += fontSize * 2;
+                    x += Screen.FONT_SIZE * 2;
                 }
-                const y = 190 + (parseInt(i / 6) * fontSize * 1.5);
+                const y = 190 + (parseInt(i / 6) * Screen.FONT_SIZE);
                 return this.add.text(x, y, letter)
                     .setFontSize(Screen.FONT_SIZE)
                     .setFontFamily('Impact');
@@ -123,7 +119,7 @@ class SceneEnterNameOnePlayer extends Phaser.Scene {
                     this.validateName();
                     break;
                 default:
-                    if (this.nameValue.length < MAX_NAME_LENGTH) {
+                    if (this.nameValue.length < Game.MAX_NAME_LENGTH) {
                         this.nameValue += this.selected;
                         this.soundSelected.play();
                     }
@@ -144,7 +140,7 @@ class SceneEnterNameOnePlayer extends Phaser.Scene {
     }
 
     validateName() {
-        Ranking.onePlayerScores().add({player: this.nameValue, time: this.score})
+        Ranking.onePlayerScores().add({player: this.nameValue, time: this.score});
         this.scene.start('sceneScoresOnePlayer');
         this.soundEnded.play();
     }
