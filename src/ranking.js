@@ -29,6 +29,11 @@ class OnePlayerScores {
         localStorage.setItem('1P_scores', JSON.stringify(this.scores));
     }
 
+    add(score) {
+        this.scores.push(score);
+        this.save();
+    }
+
     static load() {
         return JSON.parse(localStorage.getItem('1P_scores'));
     }
