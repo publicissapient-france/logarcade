@@ -40,8 +40,65 @@ class OnePlayerScores {
 
 }
 
-module.exports = {
-    onePlayerScores: () => {
-        return new OnePlayerScores();
+class TwoPlayerScores {
+
+    constructor() {
+        const DEFAULT_SCORES = [
+            {winner: 'MPAQUE', loser: 'JSMADJA'},
+            {winner: 'JSMADJA', loser: 'JSMADJA'},
+            {winner: 'DATTALI', loser: 'FDESROUS'},
+            {winner: 'PTIRMAN', loser: 'MPAQE'},
+            {winner: 'ABEAUCHA', loser: 'PTIRMAN'},
+            {winner: 'CNGUYEN', loser: 'PTIRMAN'},
+            {winner: 'CNGUYEN', loser: 'FDESROUS'},
+            {winner: 'CNGUYEN', loser: 'PTIRMAN'},
+            {winner: 'KKERNINO', loser: 'JSMADJA'},
+            {winner: 'MTRACCO', loser: 'JSMADJA'},
+        ];
+        this.scores = TwoPlayerScores.load() || DEFAULT_SCORES;
     }
+
+    save() {
+        localStorage.setItem('2P_scores', JSON.stringify(this.scores));
+    }
+
+    add(score) {
+        this.scores.push(score);
+        this.save();
+    }
+
+    static load() {
+        return JSON.parse(localStorage.getItem('2P_scores'));
+    }
+
+    list() {
+        const winners = _.groupBy(this.scores, e => e.winner);
+        const losers = _.groupBy(this.scores, e => e.loser);
+        const winnerNames = _.keys(winners);
+        return _(winnerNames)
+            .map(name => ({
+                player: name,
+                wins: winners[name].length,
+                loses: losers[name] ? losers[name].length : 0,
+            }))
+            .orderBy(result => {
+                if (result.loses === 0) {
+                    return -result.wins;
+                }
+                return -(result.wins / result.loses);
+            })
+            .take(5)
+            .map((score, i) => {
+                const rank = i + 1;
+                const player = score.player;
+                return {rank, player, score: `${score.wins}-${score.loses}`};
+            })
+            .value();
+    }
+
+}
+
+module.exports = {
+    onePlayerScores: () => new OnePlayerScores(),
+    twoPlayerScores: () => new TwoPlayerScores(),
 };

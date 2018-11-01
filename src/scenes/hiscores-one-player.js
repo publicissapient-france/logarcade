@@ -6,8 +6,6 @@ const Background = require('../components/background');
 const TitleBanner = require('../components/title-banner');
 const ScoreLines = require('../components/score-lines');
 
-const CYCLE = true;
-
 class SceneScoresOnePlayer extends Phaser.Scene {
 
     constructor() {
@@ -18,7 +16,7 @@ class SceneScoresOnePlayer extends Phaser.Scene {
         this.actions = {
             startGame: new StartGameAction(this),
         };
-        this.components ={
+        this.components = {
             background: new Background(this),
             titleBanner: new TitleBanner(this),
             scoreLines: new ScoreLines(this),
@@ -37,9 +35,7 @@ class SceneScoresOnePlayer extends Phaser.Scene {
         this.components.titleBanner.create('SCORE RANKING 1P');
         this.components.scoreLines.create(this.computeScores());
 
-        if (CYCLE) {
-            this.time.delayedCall(5000, () => this.scene.start('sceneScoresTwoPlayers'), [], this);
-        }
+        this.time.delayedCall(5000, () => this.scene.start('sceneScoresTwoPlayers'), [], this);
     }
 
     update() {
