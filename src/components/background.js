@@ -11,9 +11,10 @@ class Background {
     }
 
     create() {
-        this.bg = this.add.image(0, 0, 'bg').setOrigin(0);
-        this.bg.setScale(Screen.ZOOM, Screen.ZOOM);
-        this.bg.setZ(-1);
+        this.bg = this.add.image(0, 0, 'bg')
+            .setOrigin(0)
+            .setScale(Screen.ZOOM)
+            .setZ(-1);
     }
 
 }
