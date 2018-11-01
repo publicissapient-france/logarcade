@@ -2,6 +2,7 @@ const _ = require('lodash');
 const Screen = require('../screen');
 const Format = require('../format');
 const Game = require('../game');
+const {CONTROLS_P1} = require('../controls');
 
 const CYCLE = true;
 
@@ -17,8 +18,6 @@ class SceneScoresOnePlayer extends Phaser.Scene {
 
     constructor() {
         super({key: 'sceneScoresOnePlayer'});
-        this.scores = JSON.parse(localStorage.getItem('1P_scores')) || DEFAULT_SCORES;
-        localStorage.setItem('1P_scores', JSON.stringify(this.scores));
     }
 
     preload() {
@@ -27,6 +26,9 @@ class SceneScoresOnePlayer extends Phaser.Scene {
     }
 
     create() {
+        this.scores = JSON.parse(localStorage.getItem('1P_scores')) || DEFAULT_SCORES;
+        localStorage.setItem('1P_scores', JSON.stringify(this.scores));
+
         this.bg = this.add.image(0, 0, 'bg').setOrigin(0);
         this.bg.setScale(Screen.ZOOM, Screen.ZOOM);
         this.bg.setZ(-1);
@@ -46,6 +48,13 @@ class SceneScoresOnePlayer extends Phaser.Scene {
 
         if (CYCLE) {
             this.time.delayedCall(5000, () => this.scene.start('sceneScoresTwoPlayers'), [], this);
+        }
+        this.p1start = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[CONTROLS_P1.START]);
+    }
+
+    update() {
+        if (Phaser.Input.Keyboard.JustDown(this.p1start)) {
+            this.scene.start('sceneGameOnePlayer');
         }
     }
 

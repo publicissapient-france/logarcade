@@ -1,5 +1,6 @@
 const Screen = require('../screen');
 const Format = require('../format');
+const {CONTROLS_P1} = require('../controls');
 
 const CYCLE = true;
 
@@ -49,6 +50,14 @@ class SceneScoresTwoPlayers extends Phaser.Scene {
 
         if (CYCLE) {
             this.time.delayedCall(5000, () => this.scene.start('sceneLogo'), [], this);
+        }
+
+        this.p1start = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[CONTROLS_P1.START]);
+    }
+
+    update() {
+        if (Phaser.Input.Keyboard.JustDown(this.p1start)) {
+            this.scene.start('sceneGameOnePlayer');
         }
     }
 

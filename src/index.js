@@ -15,7 +15,6 @@ const config = {
     width: Screen.WIDTH,
     height: Screen.HEIGHT,
     scene: [
-        // SceneEnterNameOnePlayer,
         SceneLogo,
         SceneTitle,
         SceneDemo,
@@ -23,6 +22,7 @@ const config = {
         SceneScoresTwoPlayers,
         SceneGameOnePlayer,
         SceneGameTwoPlayers,
+        SceneEnterNameOnePlayer,
     ],
 };
 

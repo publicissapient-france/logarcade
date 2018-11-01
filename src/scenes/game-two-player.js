@@ -6,7 +6,6 @@ const Engine = require('../engine');
 
 const {HealthBar} = require('../healthbar');
 
-const fontSize = 36;
 var power;
 
 const color_P1 = 0xFBB03B;
@@ -171,7 +170,7 @@ class SceneGameTwoPlayers extends Phaser.Scene {
         this.timer.setScale(1.8);
 
         this.remainingTime = INITIAL_REMAINING_TIME;
-        this.time = this.add.text(305, 26, this.remainingTime, {font: `${fontSize}px VT323`});
+        this.time = this.add.text(305, 26, this.remainingTime, {font: `${Screen.FONT_SIZE}px VT323`});
         this.start = new Date();
 
         this.nextQuestion();
@@ -209,7 +208,7 @@ class SceneGameTwoPlayers extends Phaser.Scene {
                     y: 125 + (column++ * 90),
                     text: question.answers[i],
                     style: {
-                        font: `${fontSize}px VT323`,
+                        font: `${Screen.FONT_SIZE}px VT323`,
                         wordWrap: {width: 200, useAdvancedWrap: true}
                     }
                 });

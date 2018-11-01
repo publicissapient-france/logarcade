@@ -55,7 +55,7 @@ class SceneTitle extends Phaser.Scene {
         });
     }
 
-    update(time, delta) {
+    update() {
         if (Phaser.Input.Keyboard.JustDown(this.p1start)) {
             this.scene.start('sceneGameOnePlayer');
         }
