@@ -106,7 +106,7 @@ class SceneGameOnePlayer extends Phaser.Scene {
     endPerfectGame() {
         this.gameOver = true;
         this.components.alertPerfect.launch();
-        const elapsedTime = Math.round((INITIAL_REMAINING_TIME - this.remainingTimeInMs) * 1000);
+        const elapsedTime = this.components.timer.getElapsedTime();
         if (SceneGameOnePlayer.isHiScore(elapsedTime)) {
             return this.goToEnterName(elapsedTime);
         }
@@ -130,7 +130,7 @@ class SceneGameOnePlayer extends Phaser.Scene {
     endTimeUpGame() {
         this.gameOver = true;
         this.components.alertTimesUp.launch();
-        this.time.delayedCall(5000, () => this.scene.start('sceneLogo'), [], this);
+        this.time.delayedCall(3000, () => this.scene.start('sceneLogo'), [], this);
     }
 
     update() {
