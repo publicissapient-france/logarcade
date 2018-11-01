@@ -9,5 +9,6 @@ module.exports = {
     devServer: {
         watchContentBase: true,
         publicPath: '/dist/',
-    }
+    },
+    mode: 'development'
 };

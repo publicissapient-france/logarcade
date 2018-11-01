@@ -17,15 +17,18 @@ class Buttons {
 
     create() {
         BUTTONS.forEach((button, i) => {
-            this.anims.create({
-                key: `${button}_active`,
-                frames: [
-                    {key: `BTN_${button}_pressed`, duration: 50},
-                    {key: `BTN_${button}`}
-                ],
-                frameRate: 8,
-                repeat: 0
-            });
+            const animationName = `${button}_active`;
+            if (!this.anims.get(animationName)) {
+                this.anims.create({
+                    key: animationName,
+                    frames: [
+                        {key: `BTN_${button}_pressed`, duration: 50},
+                        {key: `BTN_${button}`}
+                    ],
+                    frameRate: 8,
+                    repeat: 0
+                });
+            }
 
             this.feedback[button] = this.add.graphics();
             this.feedback[button].beginPath();

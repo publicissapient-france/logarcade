@@ -24,18 +24,17 @@ class SceneLogo extends Phaser.Scene {
 
     create() {
         this.actions.startGame.create();
-
-        const data = {
-            key: 'snooze',
-            frames: [],
-            frameRate: 25,
-            repeat: 0,
-        };
-        for (let i = 0; i < 25; i++) {
-            data.frames.push({key: 'logo' + i});
+        if (!this.anim) {
+            this.anim = this.anims.create({
+                key: 'snooze',
+                frames: _.range(25).map(i => ({key: `logo${i}`})),
+                frameRate: 25,
+                repeat: 0,
+            });
         }
-        this.anims.create(data);
-        this.add.sprite(Screen.WIDTH / 2, Screen.HEIGHT / 2, 'logo0').setScale(Screen.ZOOM).play('snooze');
+        this.logo = this.add.sprite(Screen.WIDTH / 2, Screen.HEIGHT / 2, 'logo0')
+            .setScale(Screen.ZOOM)
+            .play('snooze');
 
         this.time.delayedCall(2000, () => this.scene.start('sceneTitle'), [], this);
     }
@@ -43,7 +42,6 @@ class SceneLogo extends Phaser.Scene {
     update() {
         this.actions.startGame.update();
     }
-
 }
 
 module.exports = SceneLogo;

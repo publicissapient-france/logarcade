@@ -16,11 +16,15 @@ class Timer {
 
         this.remainingTime = INITIAL_REMAINING_TIME;
         this.timeText = this.add.text(Screen.WIDTH / 2 - 17, 20, this.remainingTime, {font: `${Screen.FONT_SIZE}px VT323`});
+    }
+
+    launch() {
         this.start = new Date();
     }
 
     update() {
-        const elapsedTime = (new Date().getTime() - this.start.getTime()) / 1000;
+        const time = this.start ? this.start.getTime() : new Date().getTime();
+        const elapsedTime = (new Date().getTime() - time) / 1000;
         this.remainingTimeInMs = INITIAL_REMAINING_TIME - elapsedTime;
         this.remainingTime = Math.round(this.remainingTimeInMs);
         this.timeText.setText(_.padStart(this.remainingTime, 2, '0'));
