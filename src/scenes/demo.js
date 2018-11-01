@@ -1,9 +1,15 @@
 const Screen = require('../screen');
-const {CONTROLS_P1} = require('../controls');
+const StartGameAction = require('../actions/start-game');
 
 class SceneDemo extends Phaser.Scene {
     constructor() {
         super({key: 'sceneDemo'});
+    }
+
+    init() {
+        this.actions = {
+            startGame: new StartGameAction(this),
+        };
     }
 
     preload() {
@@ -28,13 +34,12 @@ class SceneDemo extends Phaser.Scene {
         this.time.delayedCall(3000, () => {
             this.scene.start('sceneScoresOnePlayer')
         }, [], this);
-        this.p1start = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[CONTROLS_P1.START]);
+
+        this.actions.startGame.create();
     }
 
     update() {
-        if (Phaser.Input.Keyboard.JustDown(this.p1start)) {
-            this.scene.start('sceneGameOnePlayer');
-        }
+        this.actions.startGame.update();
     }
 }
 
