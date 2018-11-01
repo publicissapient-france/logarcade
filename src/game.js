@@ -1,5 +1,5 @@
 const INITIAL_REMAINING_TIME = 30;
-const ONE_PLAYER_QUIZ_LENGTH = 5;
+const ONE_PLAYER_QUIZ_LENGTH = 15;
 const TWO_PLAYER_QUIZ_LENGTH = 20;
 
 module.exports = {
