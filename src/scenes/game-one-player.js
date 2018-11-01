@@ -1,10 +1,10 @@
 const {CONTROLS_P1, CONTROLS_P2} = require('../controls');
-const LOGOS = require('../logos');
-const {INITIAL_REMAINING_TIME} = require('../game');
-const Engine = require('../engine');
-const Game = require('../game');
+const LOGOS = require('../domain/logos');
+const {INITIAL_REMAINING_TIME} = require('../domain/game');
+const Engine = require('../domain/engine');
+const Game = require('../domain/game');
 const _ = require('lodash');
-const Ranking = require('../ranking');
+const Ranking = require('../domain/ranking');
 const Background = require('../components/background');
 const Buttons = require('../components/buttons');
 const Answers = require('../components/answers');
@@ -12,7 +12,7 @@ const Alert = require('../components/alert');
 const LogoWindow = require('../components/logo_window');
 const Timer = require('../components/timer');
 const LifeBars = require('../components/life-bars');
-const Colors = require('../colors');
+const Colors = require('../components/colors');
 
 class SceneGameOnePlayer extends Phaser.Scene {
     constructor() {

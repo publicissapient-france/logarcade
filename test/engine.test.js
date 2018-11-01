@@ -1,6 +1,6 @@
 const assert = require('assert');
-const Engine = require('../src/engine');
-const logos = require('../src/logos');
+const Engine = require('../src/domain/engine');
+const logos = require('../src/domain/logos');
 
 describe('Engine', () => {
     it('should create quiz of 20 logos', () => {

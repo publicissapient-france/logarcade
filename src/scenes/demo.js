@@ -1,4 +1,4 @@
-const Screen = require('../screen');
+const Screen = require('../components/screen');
 const StartGameAction = require('../actions/start-game');
 
 class SceneDemo extends Phaser.Scene {

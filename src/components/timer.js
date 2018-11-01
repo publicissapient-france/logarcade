@@ -1,5 +1,5 @@
-const Screen = require('../screen');
-const INITIAL_REMAINING_TIME = require('../game').INITIAL_REMAINING_TIME;
+const Screen = require('./screen');
+const INITIAL_REMAINING_TIME = require('../domain/game').INITIAL_REMAINING_TIME;
 
 class Timer {
     constructor(game) {

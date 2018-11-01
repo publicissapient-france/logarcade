@@ -1,6 +1,6 @@
-const Screen = require('../screen');
-const Colors = require('../colors');
-const {HealthBar} = require('../healthbar');
+const Screen = require('./screen');
+const Colors = require('./colors');
+const {HealthBar} = require('./healthbar');
 
 class LifeBars {
     constructor(game) {

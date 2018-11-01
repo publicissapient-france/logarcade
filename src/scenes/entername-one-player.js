@@ -1,8 +1,8 @@
 const _ = require('lodash');
-const Screen = require('../screen');
-const Game = require('../game');
+const Screen = require('../components/screen');
+const Game = require('../domain/game');
 const {CONTROLS_P1} = require('../controls');
-const Ranking = require('../ranking');
+const Ranking = require('../domain/ranking');
 const Background = require('../components/background');
 const TitleBanner = require('../components/title-banner');
 

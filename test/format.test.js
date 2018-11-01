@@ -1,4 +1,4 @@
-const Format = require('../src/format');
+const Format = require('../src/domain/format');
 const assert = require('assert');
 
 describe('Format', () => {

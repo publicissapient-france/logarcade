@@ -1,4 +1,4 @@
-const Screen = require('../screen');
+const Screen = require('./screen');
 
 const BUTTONS = ['A', 'B', 'C', 'D'];
 

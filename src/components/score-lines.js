@@ -1,4 +1,4 @@
-const Screen = require('../screen');
+const Screen = require('./screen');
 
 class ScoreLines {
 
