@@ -314,7 +314,7 @@ class SceneGameOnePlayer extends Phaser.Scene {
 
             const elapsedTime = (new Date().getTime() - this.start.getTime()) / 1000;
             this.remainingTimeInMs = INITIAL_REMAINING_TIME - elapsedTime;
-            this.remainingTime = Math.round(this.remainingTime);
+            this.remainingTime = Math.round(this.remainingTimeInMs);
             if (this.remainingTime <= 0) {
                 if (!this.tweenTimesUp.isPlaying()) {
                     this.layer.setVisible(true);
