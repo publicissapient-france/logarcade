@@ -97,7 +97,7 @@ class SceneGameOnePlayer extends Phaser.Scene {
         if (this.logo) {
             this.logo.setTexture(this.quiz[this.currentQuestion].validAnswer.name);
         } else {
-            this.logo = this.add.image(450, 280, this.quiz[this.currentQuestion].validAnswer.name).setScale(2);
+            this.logo = this.add.image(450, 280, this.quiz[this.currentQuestion].validAnswer.name).setScale(Screen.ZOOM);
         }
 
         let column = 0;

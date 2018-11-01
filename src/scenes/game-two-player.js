@@ -52,7 +52,7 @@ class SceneGameTwoPlayers extends Phaser.Scene {
 
     create() {
         this.bg = this.add.image(0, 0, 'bg').setOrigin(0);
-        this.bg.setScale(2);
+        this.bg.setScale(Screen.ZOOM);
         this.bg.setZ(-1);
 
         this.buttons.P1.A = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[CONTROLS_P1.A]);
@@ -101,7 +101,7 @@ class SceneGameTwoPlayers extends Phaser.Scene {
             ],
             frameRate: 8,
             repeat: 0
-        })
+        });
 
 
         this.feedback.A = this.add.graphics();
@@ -137,12 +137,12 @@ class SceneGameTwoPlayers extends Phaser.Scene {
         this.feedback.D.alpha = 0;
 
 
-        this.BTN_A = this.add.sprite(50, 150, 'BTN_A').setScale(2);
-        this.BTN_B = this.add.sprite(50, 240, 'BTN_B').setScale(2);
-        this.BTN_C = this.add.sprite(50, 330, 'BTN_C').setScale(2);
-        this.BTN_D = this.add.sprite(50, 420, 'BTN_D').setScale(2);
+        this.BTN_A = this.add.sprite(50, 150, 'BTN_A').setScale(Screen.ZOOM);
+        this.BTN_B = this.add.sprite(50, 240, 'BTN_B').setScale(Screen.ZOOM);
+        this.BTN_C = this.add.sprite(50, 330, 'BTN_C').setScale(Screen.ZOOM);
+        this.BTN_D = this.add.sprite(50, 420, 'BTN_D').setScale(Screen.ZOOM);
 
-        this.add.image(470, 280, 'WINDOW').setScale(2);
+        this.add.image(470, 280, 'WINDOW').setScale(Screen.ZOOM);
 
 
         this.healthbarPlayerOne = new HealthBar(this, {
@@ -187,7 +187,7 @@ class SceneGameTwoPlayers extends Phaser.Scene {
         if (this.logo) {
             this.logo.setTexture(this.quiz[this.currentQuestion].validAnswer.name);
         } else {
-            this.logo = this.add.image(470, 280, this.quiz[this.currentQuestion].validAnswer.name).setScale(6);
+            this.logo = this.add.image(470, 280, this.quiz[this.currentQuestion].validAnswer.name).setScale(Screen.ZOOM);
         }
 
         let column = 0;
