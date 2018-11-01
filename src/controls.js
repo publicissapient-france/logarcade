@@ -16,6 +16,10 @@ const controlsPlayer2_Keyboard = {
     C: 'O',
     D: 'P',
     START: 'ENTER',
+    UP: 'Y',
+    DOWN: 'H',
+    LEFT: 'G',
+    RIGHT: 'D',
 };
 
 const controlsPlayer1_Jpac = {
