@@ -6,6 +6,7 @@ const Engine = require('../engine');
 const Game = require('../game');
 const _ = require('lodash');
 const {HealthBar} = require('../healthbar');
+const Ranking = require('../ranking');
 
 var power;
 
@@ -223,10 +224,10 @@ class SceneGameOnePlayer extends Phaser.Scene {
                 this.tweenPerfect.resume();
             }
             const elapsedTime =  Math.round((INITIAL_REMAINING_TIME - this.remainingTimeInMs) * 1000);
-            if(this.isHiScore(elapsedTime)) {
+            if(SceneGameOnePlayer.isHiScore(elapsedTime)) {
                 this.time.delayedCall(1000, () => this.scene.start('sceneEnterNameOnePlayer', {score: elapsedTime}), [], this);
             } else {
-                this.time.delayedCall(5000, () => this.scene.start('sceneLogo'), [], this);
+                this.time.delayedCall(2000, () => this.scene.start('sceneLogo'), [], this);
             }
             return;
         }
@@ -361,8 +362,8 @@ class SceneGameOnePlayer extends Phaser.Scene {
         }
     }
 
-    isHiScore(score) {
-        return true;
+    static isHiScore(score) {
+        return Ranking.onePlayerScores().isHiScore(score);
     }
 }
 
