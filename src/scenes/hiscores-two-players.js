@@ -126,7 +126,7 @@ class SceneScoresTwoPlayers extends Phaser.Scene {
             .take(5)
             .map((score, i) => {
                 const rank = Format.formatRank(i + 1);
-                const player = Format.formatPlayer(score.player);
+                const player = score.player;
                 return {rank, player, score: `${score.wins}-${score.loses}`};
             })
             .value();

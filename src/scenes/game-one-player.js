@@ -254,7 +254,7 @@ class SceneGameOnePlayer extends Phaser.Scene {
             } else {
                 this.texts[i] = this.make.text({
                     x: 100,
-                    y: 125 + (column++ * 90),
+                    y: 117 + (column++ * 90),
                     text: question.answers[i],
                     style: {
                         font: `${Screen.FONT_SIZE}px VT323`,
@@ -314,7 +314,7 @@ class SceneGameOnePlayer extends Phaser.Scene {
 
             const elapsedTime = (new Date().getTime() - this.start.getTime()) / 1000;
             this.remainingTimeInMs = INITIAL_REMAINING_TIME - elapsedTime;
-            this.remainingTime = Math.round(this.remainingTime);
+            this.remainingTime = Math.round(this.remainingTimeInMs);
             if (this.remainingTime <= 0) {
                 if (!this.tweenTimesUp.isPlaying()) {
                     this.layer.setVisible(true);

@@ -13,8 +13,10 @@ const formatRank = rank => {
     }
 };
 
-const formatTime = time => `${parseInt(time / 1000)}"${_.padStart((time - (parseInt(time / 1000) * 1000)) / 10, 2, '0') }`;
+const formatTime = time => {
+    const seconds = _.padStart(parseInt(time / 1000), 2, '0');
+    const ms = _.padStart((time - (parseInt(time / 1000) * 1000)) / 10, 2, '0').split('.')[0];
+    return `${seconds}"${ms}`;
+};
 
-const formatPlayer = player => _.padEnd(player, 8);
-
-module.exports = {formatRank, formatTime, formatPlayer};
+module.exports = {formatRank, formatTime};

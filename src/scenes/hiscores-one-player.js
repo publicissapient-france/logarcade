@@ -3,6 +3,7 @@ const Screen = require('../screen');
 const Format = require('../format');
 const Game = require('../game');
 const {CONTROLS_P1} = require('../controls');
+const Ranking = require('../ranking');
 
 const CYCLE = true;
 
@@ -113,16 +114,11 @@ class SceneScoresOnePlayer extends Phaser.Scene {
     }
 
     computeScores() {
-        return _(this.scores)
-            .orderBy(score => score.time)
-            .take(5)
-            .map((score, i) => {
-                const rank = Format.formatRank(i + 1);
-                const player = score.player;
-                const time = Format.formatTime(score.time);
-                return {rank, player, score: time};
-            })
-            .value();
+        return _.map(Ranking.onePlayerScores().list(), score => ({
+            rank: Format.formatRank(score.rank),
+            player: score.player,
+            score: Format.formatTime(score.score)
+        }));
     }
 
     addScoreLines() {

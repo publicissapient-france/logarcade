@@ -11,7 +11,7 @@ const Screen = require('../screen');
 const {CONTROLS_P1} = require('../controls');
 const fontSize = 36;
 const MAX_NAME_LENGTH = 8;
-const Format = require('../format');
+const Ranking = require('../ranking');
 
 class SceneEnterNameOnePlayer extends Phaser.Scene {
     constructor() {
@@ -144,9 +144,7 @@ class SceneEnterNameOnePlayer extends Phaser.Scene {
     }
 
     validateName() {
-        const scores = JSON.parse(localStorage.getItem('1P_scores'));
-        scores.push({player: this.nameValue, time: this.score});
-        localStorage.setItem('1P_scores', JSON.stringify(scores));
+        Ranking.onePlayerScores().add({player: this.nameValue, time: this.score})
         this.scene.start('sceneScoresOnePlayer');
         this.soundEnded.play();
     }
