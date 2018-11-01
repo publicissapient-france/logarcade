@@ -113,6 +113,14 @@ class SceneGameOnePlayer extends Phaser.Scene {
         this.components.answers.update(question);
     }
 
+    goToLogo() {
+        this.time.delayedCall(2000, () => this.scene.start('sceneLogo'), [], this);
+    }
+
+    goToEnterName(elapsedTime) {
+        this.time.delayedCall(1000, () => this.scene.start('sceneEnterNameOnePlayer', {score: elapsedTime}), [], this);
+    }
+
     endPerfectGame() {
         this.gameOver = true;
         this.components.alertPerfect.launch();
@@ -122,15 +130,6 @@ class SceneGameOnePlayer extends Phaser.Scene {
         }
         this.goToLogo();
     }
-
-    goToLogo() {
-        this.time.delayedCall(2000, () => this.scene.start('sceneLogo'), [], this);
-    }
-
-    goToEnterName(elapsedTime) {
-        this.time.delayedCall(1000, () => this.scene.start('sceneEnterNameOnePlayer', {score: elapsedTime}), [], this);
-    }
-
     endNoMoreLifeGame() {
         this.gameOver = true;
         this.components.alertGameOver.launch();
