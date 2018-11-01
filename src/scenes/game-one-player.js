@@ -26,6 +26,7 @@ class SceneGameOnePlayer extends Phaser.Scene {
             alertTimesUp: new Alert(this),
             alertGameOver: new Alert(this),
             alertPerfect: new Alert(this),
+            alertNewChallenger: new Alert(this),
             logoWindow: new LogoWindow(this),
             timer: new Timer(this),
             lifeBars: new LifeBars(this),
@@ -40,6 +41,7 @@ class SceneGameOnePlayer extends Phaser.Scene {
         this.components.alertTimesUp.preload('TIMES_UP', 'assets/elements/TIMES_UP.png');
         this.components.alertGameOver.preload('GAME_OVER', 'assets/elements/GAME_OVER.png');
         this.components.alertPerfect.preload('PERFECT', 'assets/elements/PERFECT.png');
+        this.components.alertNewChallenger.preload('NEW_CHALLENGER', 'assets/elements/NEW_CHALLENGER.png');
 
         this.load.path = 'assets/';
         this.load.audio('theme', ['audio/remix.mp3']);
@@ -66,6 +68,7 @@ class SceneGameOnePlayer extends Phaser.Scene {
         this.components.alertTimesUp.create();
         this.components.alertGameOver.create();
         this.components.alertPerfect.create();
+        this.components.alertNewChallenger.create();
 
         // INPUTS
         this.buttons.A = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[CONTROLS_P1.A]);
@@ -154,7 +157,8 @@ class SceneGameOnePlayer extends Phaser.Scene {
             }
 
             if (Phaser.Input.Keyboard.JustDown(this.p2start)) {
-                this.scene.start('sceneGameTwoPlayers');
+                this.components.alertNewChallenger.launch();
+                this.time.delayedCall(2000, () => this.scene.start('sceneGameTwoPlayers'), [], this);
             }
         }
     }
