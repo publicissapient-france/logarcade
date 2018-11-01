@@ -1,5 +1,5 @@
 module.exports = [
-    {file: 'actions', name: 'actions'},
+    {file: 'actions.png', name: 'actions'},
     {file: 'akka.png', name: 'akka'},
     {file: 'android.png', name: 'android'},
     {file: 'angular.png', name: 'angular'},

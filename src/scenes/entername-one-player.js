@@ -11,23 +11,40 @@ const Screen = require('../screen');
 const {CONTROLS_P1} = require('../controls');
 const fontSize = 36;
 const MAX_NAME_LENGTH = 8;
+const Format = require('../format');
 
 class SceneEnterNameOnePlayer extends Phaser.Scene {
     constructor() {
         super({key: 'sceneEnterNameOnePlayer'});
-        this.selected = 'A';
-        this.buttons = {};
-        this.selectedIndex = 0;
-        this.nameValue = '';
     }
 
     preload() {
+        this.load.image('bg', 'assets/backgrounds/BG.png');
+
         this.load.audio('selected', ['assets/audio/Rise02.aif.wav']);
         this.load.audio('deleted', ['assets/audio/Rise03.aif.wav']);
         this.load.audio('ended', ['assets/audio/Rise04.aif.wav']);
     }
 
-    create() {
+    create(data) {
+        this.selected = 'A';
+        this.buttons = {};
+        this.selectedIndex = 0;
+        this.nameValue = '';
+
+        this.score = data.score;
+
+        this.bg = this.add.image(0, 0, 'bg').setOrigin(0);
+        this.bg.setScale(Screen.ZOOM, Screen.ZOOM);
+        this.bg.setZ(-1);
+
+        const titleValue = '         ENTER YOUR NAME         ';
+        this.title = this.add.text(0, 25, titleValue, {font: `${Screen.FONT_SIZE}px Impact`});
+        this.title
+            .setBackgroundColor('#ee4239')
+            .setFontStyle('italic')
+            .setDisplaySize(Screen.WIDTH, Screen.FONT_SIZE);
+
         this.soundDeleted = this.sound.add('deleted');
         this.soundSelected = this.sound.add('selected');
         this.soundEnded = this.sound.add('ended');
@@ -39,21 +56,21 @@ class SceneEnterNameOnePlayer extends Phaser.Scene {
         this.buttons.LEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[CONTROLS_P1.LEFT]);
         this.buttons.RIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[CONTROLS_P1.RIGHT]);
 
-        const titleValue = 'ENTER NAME';
-        this.title = this.add.text(0, 30, titleValue, {font: `${fontSize}px VT323`, boundsAlignH: "center"});
-        this.title.x = Screen.WIDTH / 2 - this.title.width / 2;
-
-        this.name = this.add.text(0, 300, '', {font: `${fontSize}px VT323`, boundsAlignH: "center"});
+        this.name = this.add.text(Screen.WIDTH / 2 - 75, 100, '')
+            .setFontSize(Screen.FONT_SIZE)
+            .setFontFamily('Impact')
+            .setStroke('#2a366b', 4);
 
         this.letters = _(LETTERS)
             .map((letter, i) => {
-                let x = (i % 6) * (fontSize * 2);
+                let x = (i % 6) * (fontSize * 2) + 150;
                 if (i > 26) {
                     x += fontSize * 2;
                 }
-                const y = 90 + (parseInt(i / 6) * fontSize);
-                const style = {font: `${fontSize}px VT323`};
-                return this.add.text(x, y, letter, style);
+                const y = 190 + (parseInt(i / 6) * fontSize * 1.5);
+                return this.add.text(x, y, letter)
+                    .setFontSize(Screen.FONT_SIZE)
+                    .setFontFamily('Impact');
             })
             .value();
 
@@ -62,7 +79,7 @@ class SceneEnterNameOnePlayer extends Phaser.Scene {
     }
 
     highlightSelected() {
-        this.letters.forEach(letter => letter.setStroke('#f00', letter.text === this.selected ? 4 : 0));
+        this.letters.forEach(letter => letter.setStroke('#ee4239', letter.text === this.selected ? 12 : 0));
     }
 
     selectLetter() {
@@ -73,7 +90,7 @@ class SceneEnterNameOnePlayer extends Phaser.Scene {
     }
 
     updateName() {
-        this.name.setText(_.padEnd(this.nameValue, 8, '•'));
+        this.name.setText(_.padEnd(this.nameValue, 8, '-'));
     }
 
     update() {
@@ -127,6 +144,9 @@ class SceneEnterNameOnePlayer extends Phaser.Scene {
     }
 
     validateName() {
+        const scores = JSON.parse(localStorage.getItem('1P_scores'));
+        scores.push({player: this.nameValue, time: this.score});
+        localStorage.setItem('1P_scores', JSON.stringify(scores));
         this.scene.start('sceneScoresOnePlayer');
         this.soundEnded.play();
     }

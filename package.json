@@ -2,17 +2,22 @@
   "name": "logarcade",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "main.js",
   "scripts": {
     "dev": "webpack-dev-server",
     "build": "webpack",
-    "test": "mocha test"
+    "test": "mocha test",
+    "package": "electron-packager . --overwrite --platform=win32 --arch=ia32"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/xebia-france/logarcade.git"
   },
-  "author": "",
+  "author": {
+    "name": "Xebia France",
+    "email": "info@xebia.fr",
+    "url": "xebia.fr"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/xebia-france/logarcade/issues"
@@ -23,6 +28,10 @@
     "mocha": "^5.2.0"
   },
   "devDependencies": {
+    "electron": "^3.0.6",
+    "electron-packager": "^12.2.0",
+    "electron-windows-installer": "^1.7.8",
+    "gulp": "^3.9.1",
     "webpack": "^4.20.2",
     "webpack-cli": "^3.1.2",
     "webpack-dev-server": "^3.1.9"

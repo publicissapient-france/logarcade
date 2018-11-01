@@ -2,11 +2,48 @@
 <html>
 <head>
     <link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet">
-    <script src="//labs.phaser.io/build/dev.js"></script>
+    <script src="https://labs.phaser.io/build/dev.js"></script>
     <title>King Of Logo</title>
+
+    <style>
+        @font-face {
+            font-family: Impact;
+            src: url("assets/fonts/IMPACT.TTF");
+        }
+
+        .fontLoader {
+            position: absolute;
+            left: -1000px;
+            visibility: hidden;
+        }
+    </style>
+
     <script src="dist/main.js"></script>
 </head>
 <body>
+
+<div class='fontLoader' style='font-family: Impact;'>_</div>
+
+<div style="display: block">
+    <div style="display: inline-block;">
+        <ul>
+            <li>1P START : <b>ESPACE</b></li>
+            <li>1P A : <b>A</b></li>
+            <li>1P B : <b>Z</b></li>
+            <li>1P C : <b>E</b></li>
+            <li>1P D : <b>T</b></li>
+        </ul>
+    </div>
+    <div style="display: inline-block;">
+        <ul>
+            <li>2P START : <b>ENTREE</b></li>
+            <li>2P A : <b>U</b></li>
+            <li>2P B : <b>I</b></li>
+            <li>2P C : <b>O</b></li>
+            <li>2P D : <b>P</b></li>
+        </ul>
+    </div>
+</div>
 
 </body>
 </html>

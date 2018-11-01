@@ -25,7 +25,7 @@ class SceneDemo extends Phaser.Scene {
             loop: 10,
         });
 
-        this.time.delayedCall(10000, () => {
+        this.time.delayedCall(3000, () => {
             this.scene.start('sceneScoresOnePlayer')
         }, [], this);
         this.p1start = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[CONTROLS_P1.START]);
