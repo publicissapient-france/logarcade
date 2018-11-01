@@ -4,11 +4,11 @@ class OnePlayerScores {
 
     constructor() {
         const DEFAULT_SCORES = [
-            {player: 'MPAQUE', time: 30000},
-            {player: 'JSMADJA', time: 30000},
-            {player: 'DATTALI', time: 30000},
-            {player: 'PTIRMAN', time: 30000},
-            {player: 'ABEAUCHA', time: 30000},
+            {player: 'MPAQUE', time: 60000},
+            {player: 'JSMADJA', time: 60000},
+            {player: 'DATTALI', time: 60000},
+            {player: 'PTIRMAN', time: 60000},
+            {player: 'ABEAUCHA', time: 60000},
         ];
         this.scores = OnePlayerScores.load() || DEFAULT_SCORES;
     }

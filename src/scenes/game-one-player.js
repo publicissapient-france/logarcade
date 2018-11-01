@@ -254,7 +254,7 @@ class SceneGameOnePlayer extends Phaser.Scene {
             } else {
                 this.texts[i] = this.make.text({
                     x: 100,
-                    y: 125 + (column++ * 90),
+                    y: 117 + (column++ * 90),
                     text: question.answers[i],
                     style: {
                         font: `${Screen.FONT_SIZE}px VT323`,
