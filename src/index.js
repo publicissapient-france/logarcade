@@ -16,15 +16,17 @@ const config = {
     width: Screen.WIDTH,
     height: Screen.HEIGHT,
     scene: [
-        /*
         SceneLogo,
         SceneTitle,
         SceneDemo,
+
         SceneScoresOnePlayer,
         SceneScoresTwoPlayers,
+
         SceneGameOnePlayer,
         SceneGameTwoPlayers,
-        SceneEnterNameOnePlayer,*/
+
+        SceneEnterNameOnePlayer,
         SceneEnterNameTwoPlayers,
     ],
 };
