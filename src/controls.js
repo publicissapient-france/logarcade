@@ -19,7 +19,7 @@ const controlsPlayer2_Keyboard = {
     UP: 'Y',
     DOWN: 'H',
     LEFT: 'G',
-    RIGHT: 'D',
+    RIGHT: 'J',
 };
 
 const controlsPlayer1_Jpac = {

@@ -19,11 +19,15 @@ class SceneEnterNameOnePlayer extends Phaser.Scene {
         super({key: 'sceneEnterNameOnePlayer'});
     }
 
-    preload() {
+    init() {
         this.components = {
             background: new Background(this),
             titleBanner: new TitleBanner(this),
         };
+    }
+
+    preload() {
+        this.components.background.preload();
 
         this.load.audio('selected', ['assets/audio/Rise02.aif.wav']);
         this.load.audio('deleted', ['assets/audio/Rise03.aif.wav']);
