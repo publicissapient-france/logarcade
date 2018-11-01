@@ -43,7 +43,7 @@ class SceneTitle extends Phaser.Scene {
 
         this.home = this.add.image(0, 0, 'home').setScale(0).setOrigin(0.5, 0.5);
         this.home.setPosition(Screen.WIDTH / 2, Screen.HEIGHT / 2, 0, 0);
-        this.time.delayedCall(3000, () => this.scene.start('sceneDemo'), [], this);
+        this.time.delayedCall(5000, () => this.scene.start('sceneDemo'), [], this);
 
         this.actions.startGame.create();
 
