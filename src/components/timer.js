@@ -29,6 +29,10 @@ class Timer {
     isTimeUp() {
         return this.remainingTime <= 0;
     }
+
+    getElapsedTime() {
+        return Math.round((INITIAL_REMAINING_TIME - this.remainingTimeInMs) * 1000);
+    }
 }
 
 module.exports = Timer;
