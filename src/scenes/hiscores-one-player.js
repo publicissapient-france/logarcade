@@ -17,7 +17,7 @@ class SceneScoresOnePlayer extends Phaser.Scene {
 
     constructor() {
         super({key: 'sceneScoresOnePlayer'});
-        this.scores = localStorage.getItem('1P_scores') || DEFAULT_SCORES;
+        this.scores = JSON.parse(localStorage.getItem('1P_scores')) || DEFAULT_SCORES;
         localStorage.setItem('1P_scores', JSON.stringify(this.scores));
     }
 
