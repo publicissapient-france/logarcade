@@ -12,6 +12,7 @@ const LogoWindow = require('../components/logo_window');
 const Timer = require('../components/timer');
 const LifeBars = require('../components/life-bars');
 const Colors = require('../components/colors');
+const CountDown = require('../components/countdown');
 
 class SceneGameOnePlayer extends Phaser.Scene {
     constructor() {
@@ -30,6 +31,7 @@ class SceneGameOnePlayer extends Phaser.Scene {
             logoWindow: new LogoWindow(this),
             timer: new Timer(this),
             lifeBars: new LifeBars(this),
+            countdown: new CountDown(this),
         };
     }
 
@@ -61,10 +63,12 @@ class SceneGameOnePlayer extends Phaser.Scene {
         // UI
         this.components.answers.create();
         this.components.background.create();
+
         this.components.buttons.create();
         this.components.logoWindow.create();
         this.components.lifeBars.create();
         this.components.timer.create();
+        this.components.countdown.create();
         this.components.alertTimesUp.create();
         this.components.alertGameOver.create();
         this.components.alertPerfect.create();
@@ -82,7 +86,11 @@ class SceneGameOnePlayer extends Phaser.Scene {
         this.validSound = this.sound.add('valid');
         this.invalidSound = this.sound.add('invalid');
 
-        this.nextQuestion();
+        this.time.delayedCall(3000, () => {
+            this.components.timer.launch();
+            this.nextQuestion();
+        }, [], this);
+
     }
 
     nextQuestion() {
@@ -127,7 +135,7 @@ class SceneGameOnePlayer extends Phaser.Scene {
         this.gameOver = true;
         this.components.alertGameOver.launch();
         this.time.delayedCall(5000, () => this.scene.start('sceneLogo'), [], this);
-        }
+    }
 
     endTimeUpGame() {
         this.gameOver = true;
