@@ -1,5 +1,5 @@
 const Screen = require('../screen');
-const {CONTROLS_P1} = require('../controls');
+const StartGameAction = require('../actions/start-game');
 
 const _ = require('lodash');
 
@@ -7,6 +7,12 @@ class SceneLogo extends Phaser.Scene {
 
     constructor() {
         super({key: 'sceneLogo'});
+    }
+
+    init() {
+        this.actions = {
+            startGame: new StartGameAction(this),
+        };
     }
 
     preload() {
@@ -17,7 +23,7 @@ class SceneLogo extends Phaser.Scene {
     }
 
     create() {
-        this.p1start = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[CONTROLS_P1.START]);
+        this.actions.startGame.create();
 
         const data = {
             key: 'snooze',
@@ -32,15 +38,11 @@ class SceneLogo extends Phaser.Scene {
         this.add.sprite(Screen.WIDTH / 2, Screen.HEIGHT / 2, 'logo0').setScale(Screen.ZOOM).play('snooze');
 
         this.time.delayedCall(2000, () => this.scene.start('sceneTitle'), [], this);
-
     }
 
     update() {
-        if (Phaser.Input.Keyboard.JustDown(this.p1start)) {
-            this.scene.start('sceneGameOnePlayer');
-        }
+        this.actions.startGame.update();
     }
-
 
 }
 
