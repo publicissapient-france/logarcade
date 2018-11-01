@@ -1,4 +1,5 @@
 const Screen = require('../screen');
+const { HealthBar } = require('../healthbar');
 
 class SceneGameTwoPlayers extends Phaser.Scene {
     constructor() {
@@ -10,7 +11,15 @@ class SceneGameTwoPlayers extends Phaser.Scene {
     }
 
     create() {
+
+        this.myHealthBar = new HealthBar(this, { x: Screen.WIDTH / 2, y: 200, bar: {color : 0xFF6347, direction: -1 }});
+        console.log("HealthBar",this.myHealthBar);
+
+        this.myHealthBar.setPosition(30,30);
+        this.myHealthBar.setProgress(50);
     }
 }
 
 module.exports = SceneGameTwoPlayers;
+
+

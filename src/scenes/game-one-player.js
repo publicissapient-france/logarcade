@@ -1,4 +1,4 @@
-const {CONTROLS_P1} = require('../controls');
+const {CONTROLS_P1, CONTROLS_P2} = require('../controls');
 const Screen = require('../screen');
 const LOGOS = require('../logos');
 const {INITIAL_REMAINING_TIME} = require('../game');
@@ -80,6 +80,11 @@ class SceneGameOnePlayer extends Phaser.Scene {
             duration: 200,
             paused: true,
         });
+
+        //DUEL GAME
+        console.log("CONTROLS_P2", CONTROLS_P2);
+        this.p2start = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[CONTROLS_P2.START]);
+        console.log("p2", this.p2start);
     }
 
     nextQuestion() {
@@ -144,6 +149,12 @@ class SceneGameOnePlayer extends Phaser.Scene {
                 this.gameOver = true;
             }
             this.timeText.setText(_.padStart(this.remainingTime, 2, '0'));
+
+
+            //DUAL GAME
+            if (Phaser.Input.Keyboard.JustDown(this.p2start)) {
+                this.scene.start('sceneGameTwoPlayers');
+            }
         }
     }
 
@@ -155,7 +166,6 @@ class SceneGameOnePlayer extends Phaser.Scene {
             this.invalidSound.play();
         }
     }
-
 }
 
 module.exports = SceneGameOnePlayer;
