@@ -35,10 +35,10 @@ const controlsPlayer1_Jpac = {
 };
 
 const controlsPlayer2_Jpac = {
-    A: 'A',
+    A: 'Q',
     B: 'S',
-    C: 'Q',
-    D: 'W',
+    C: 'A',
+    D: 'Z',
     START: 'TWO',
     UP: 'R',
     DOWN: 'F',
