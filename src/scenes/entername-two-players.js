@@ -69,7 +69,8 @@ class SceneEnterNameTwoPlayers extends Phaser.Scene {
             }
         };
 
-        this.score = data.score;
+        this.winner = data.winner;
+        this.loser = data.loser;
 
         this.components.background.create();
         this.components.titleBanner.create('      ENTER YOUR NAMES      ');
@@ -186,8 +187,10 @@ class SceneEnterNameTwoPlayers extends Phaser.Scene {
         this.players[player].letters.forEach(letter => letter.setVisible(false));
 
         if (this.players['1'].validated && this.players['2'].validated) {
-            // TODO
-            // Ranking.onePlayerScores().add({player: this.nameValue, time: this.score});
+
+            Ranking.twoPlayerScores().add({
+                winner: this.players[this.winner].nameValue,
+                loser: this.players[this.loser].nameValue});
             this.scene.start('sceneScoresTwoPlayers');
             this.soundEnded.play();
         }

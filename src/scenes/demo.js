@@ -71,7 +71,7 @@ class SceneDemo extends Phaser.Scene {
     }
 
     onKeyDown(text) {
-        this.components.lifeBars.updatePlayer1Bar(() => {
+        this.components.lifeBars.updatePlayerBar(() => {
             this.lives--;
         });
     }

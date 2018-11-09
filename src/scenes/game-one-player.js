@@ -174,7 +174,7 @@ class SceneGameOnePlayer extends Phaser.Scene {
         if (this.isAnswerValid(text)) {
             return this.validSound.play();
         }
-        this.components.lifeBars.updatePlayer1Bar(() => {
+        this.components.lifeBars.updatePlayerBar( () => {
             this.lives--;
             if (this.lives <= 0) {
                 this.endNoMoreLifeGame();
