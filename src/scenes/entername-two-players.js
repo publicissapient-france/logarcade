@@ -187,7 +187,7 @@ class SceneEnterNameTwoPlayers extends Phaser.Scene {
 
         if (this.players['1'].validated && this.players['2'].validated) {
             // TODO
-            // Ranking.onePlayerScores().add({player: this.nameValue, time: this.score});
+            // Ranking.twoPlayerScores().add({winner: NOM, loser: NOM});
             this.scene.start('sceneScoresTwoPlayers');
             this.soundEnded.play();
         }
