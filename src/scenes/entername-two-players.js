@@ -191,6 +191,7 @@ class SceneEnterNameTwoPlayers extends Phaser.Scene {
             Ranking.twoPlayerScores().add({
                 winner: this.players[this.winner].nameValue,
                 loser: this.players[this.loser].nameValue});
+
             this.scene.start('sceneScoresTwoPlayers');
             this.soundEnded.play();
         }

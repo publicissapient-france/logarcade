@@ -61,6 +61,10 @@ class Buttons {
         this[`BTN_${button}`].play(`${button}_active`);
     }
 
+    hide() {
+        BUTTONS.forEach((button) => this[`BTN_${button}`].setVisible(false));
+    }
+
 }
 
 module.exports = Buttons;
