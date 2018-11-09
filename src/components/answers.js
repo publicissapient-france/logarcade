@@ -27,6 +27,10 @@ class Answers {
             }
         }
     }
+
+    hide() {
+        this.texts.forEach(t => t.setVisible(false));
+    }
 }
 
 module.exports = Answers;

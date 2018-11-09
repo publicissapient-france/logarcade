@@ -82,7 +82,8 @@ class SceneGameOnePlayer extends Phaser.Scene {
         this.p2start = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[CONTROLS_P2.START]);
 
         // SOUNDS
-        this.sound.add('theme').play();
+        this.theme = this.sound.add('theme');
+        this.theme.play();
         this.validSound = this.sound.add('valid');
         this.invalidSound = this.sound.add('invalid');
 
@@ -122,6 +123,7 @@ class SceneGameOnePlayer extends Phaser.Scene {
     }
 
     endPerfectGame() {
+        this.onEndGame();
         this.gameOver = true;
         this.components.alertPerfect.launch();
         const elapsedTime = this.components.timer.getElapsedTime();
@@ -131,15 +133,22 @@ class SceneGameOnePlayer extends Phaser.Scene {
         this.goToLogo();
     }
     endNoMoreLifeGame() {
+        this.onEndGame();
         this.gameOver = true;
         this.components.alertGameOver.launch();
         this.time.delayedCall(5000, () => this.scene.start('sceneLogo'), [], this);
     }
 
     endTimeUpGame() {
+        this.onEndGame();
         this.gameOver = true;
         this.components.alertTimesUp.launch();
         this.time.delayedCall(3000, () => this.scene.start('sceneLogo'), [], this);
+    }
+
+    onEndGame() {
+        this.hideHUD();
+        this.theme.pause();
     }
 
     update() {
@@ -189,6 +198,12 @@ class SceneGameOnePlayer extends Phaser.Scene {
 
     static isHiScore(score) {
         return Ranking.onePlayerScores().isHiScore(score);
+    }
+
+    hideHUD() {
+        this.components.logoWindow.hide();
+        this.components.buttons.hide();
+        this.components.answers.hide();
     }
 }
 

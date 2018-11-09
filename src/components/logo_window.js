@@ -12,7 +12,7 @@ class LogoWindow {
 
     create() {
         this.logo = null;
-        this.add.image(470, 280, 'WINDOW').setScale(Screen.ZOOM);
+        this.window = this.add.image(470, 280, 'WINDOW').setScale(Screen.ZOOM);
     }
 
     update(logoName) {
@@ -24,8 +24,13 @@ class LogoWindow {
         }
     }
 
-    hide() {
+    hideLogo() {
         this.logo.setVisible(false);
+    }
+
+    hide() {
+        this.hideLogo();
+        this.window.setVisible(false);
     }
 }
 
