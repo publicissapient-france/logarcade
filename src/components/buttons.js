@@ -69,7 +69,10 @@ class Buttons {
     }
 
     hide() {
-        BUTTONS.forEach((button) => this[`BTN_${button}`].setVisible(false));
+        BUTTONS.forEach((button) => {
+            this[`BTN_${button}`].setVisible(false)
+            this.feedback[button].setVisible(false)
+        });
     }
 
 }
