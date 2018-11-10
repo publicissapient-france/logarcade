@@ -44,16 +44,23 @@ class Buttons {
 
     getFeedBack(button, color) {
         const target = this.feedback[button];
-        target.fillStyle(color);
-        target.lineStyle(2, color);
-        target.fillPath();
-        target.strokePath();
+
         this.tweens.timeline({
             targets: target,
             ease: 'Power1',
             duration: 100,
             tweens: [{alpha: 1}],
             yoyo: true,
+            onStart: () => {
+                target.fillStyle(color);
+                target.lineStyle(2, color);
+                target.fillPath();
+                target.strokePath();
+            },
+            onComplete: () => {
+                target.alpha = 0;
+            }
+
         });
     }
 
