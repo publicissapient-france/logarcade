@@ -1,4 +1,4 @@
-const {CONTROLS_P1, CONTROLS_P2} = require('../controls');
+const {CONTROLS_P1, CONTROLS_P2, JOYPADS} = require('../controls');
 const LOGOS = require('../domain/logos');
 const Engine = require('../domain/engine');
 const Game = require('../domain/game');
@@ -17,6 +17,10 @@ const CountDown = require('../components/countdown');
 class SceneGameOnePlayer extends Phaser.Scene {
     constructor() {
         super({key: 'sceneGameOnePlayer'});
+        this.BUTTON_PRESS_STATES = {
+            0: {},
+            1: {},
+        }
     }
 
     init() {
@@ -40,6 +44,7 @@ class SceneGameOnePlayer extends Phaser.Scene {
         this.components.buttons.preload();
         this.components.logoWindow.preload(LOGOS);
         this.components.timer.preload();
+        this.components.countdown.preload();
         this.components.alertTimesUp.preload('TIMES_UP', 'assets/elements/TIMES_UP.png');
         this.components.alertGameOver.preload('GAME_OVER', 'assets/elements/GAME_OVER.png');
         this.components.alertPerfect.preload('PERFECT', 'assets/elements/PERFECT.png');
@@ -49,6 +54,10 @@ class SceneGameOnePlayer extends Phaser.Scene {
         this.load.audio('theme', ['audio/remix.mp3']);
         this.load.audio('invalid', ['audio/Jingle 011.wav']);
         this.load.audio('valid', ['audio/Notification 2.wav']);
+        this.load.audio('sound_game_over', ['audio/theme_streetfighter/GAME_OVER.wav']);
+        this.load.audio('sound_perfect', ['audio/theme_streetfighter/PERFECT.wav']);
+        this.load.audio('sound_fight', ['audio/theme_streetfighter/FIGHT.wav']);
+        this.load.audio('sound_new_challenger', ['audio/theme_streetfighter/NEW_CHALLENGER.wav']);
 
         this.buttons = {};
     }
@@ -74,6 +83,8 @@ class SceneGameOnePlayer extends Phaser.Scene {
         this.components.alertPerfect.create();
         this.components.alertNewChallenger.create();
 
+        this.components.logoWindow.hide();
+
         // INPUTS
         this.buttons.A = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[CONTROLS_P1.A]);
         this.buttons.B = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[CONTROLS_P1.B]);
@@ -82,12 +93,19 @@ class SceneGameOnePlayer extends Phaser.Scene {
         this.p2start = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[CONTROLS_P2.START]);
 
         // SOUNDS
-        this.sound.add('theme').play();
+        this.theme = this.sound.add('theme');
+        this.theme.play();
         this.validSound = this.sound.add('valid');
         this.invalidSound = this.sound.add('invalid');
+        this.gameOverSound = this.sound.add('sound_game_over');
+        this.perfectSound = this.sound.add('sound_perfect');
+        this.fightSound = this.sound.add('sound_fight');
+        this.newChallengerSound = this.sound.add('sound_new_challenger');
 
         this.time.delayedCall(3000, () => {
+            this.fightSound.play();
             this.components.timer.launch();
+            this.components.logoWindow.show();
             this.nextQuestion();
         }, [], this);
 
@@ -113,16 +131,6 @@ class SceneGameOnePlayer extends Phaser.Scene {
         this.components.answers.update(question);
     }
 
-    endPerfectGame() {
-        this.gameOver = true;
-        this.components.alertPerfect.launch();
-        const elapsedTime = this.components.timer.getElapsedTime();
-        if (SceneGameOnePlayer.isHiScore(elapsedTime)) {
-            return this.goToEnterName(elapsedTime);
-        }
-        this.goToLogo();
-    }
-
     goToLogo() {
         this.time.delayedCall(2000, () => this.scene.start('sceneLogo'), [], this);
     }
@@ -131,33 +139,43 @@ class SceneGameOnePlayer extends Phaser.Scene {
         this.time.delayedCall(1000, () => this.scene.start('sceneEnterNameOnePlayer', {score: elapsedTime}), [], this);
     }
 
+    endPerfectGame() {
+        this.onEndGame();
+        this.gameOver = true;
+        this.perfectSound.play();
+        this.components.alertPerfect.launch();
+        const elapsedTime = this.components.timer.getElapsedTime();
+        if (SceneGameOnePlayer.isHiScore(elapsedTime)) {
+            return this.goToEnterName(elapsedTime);
+        }
+        this.goToLogo();
+    }
+
     endNoMoreLifeGame() {
+        this.onEndGame();
         this.gameOver = true;
         this.components.alertGameOver.launch();
-        this.time.delayedCall(5000, () => this.scene.start('sceneLogo'), [], this);
+        this.time.delayedCall(4000, () => this.scene.start('sceneLogo'), [], this);
+        this.gameOverSound.play();
     }
 
     endTimeUpGame() {
+        this.onEndGame();
         this.gameOver = true;
         this.components.alertTimesUp.launch();
         this.time.delayedCall(3000, () => this.scene.start('sceneLogo'), [], this);
     }
 
+    onEndGame() {
+        this.hideHUD();
+        this.theme.pause();
+    }
+
     update() {
         if (!this.gameOver) {
             this.components.lifeBars.updatePlayer1Progress();
-
-            ['A', 'B', 'C', 'D']
-                .forEach((button, i) => {
-                    if (this.currentQuestion >= 0  && Phaser.Input.Keyboard.JustDown(this.buttons[button])) {
-                        this.onKeyDown(this.components.answers.texts[i]);
-                        this.components.buttons.getFeedBack(button, Colors.color_P1);
-                        this.nextQuestion();
-                    }
-                    if (this.buttons[button].isDown) {
-                        this.components.buttons.push(button);
-                    }
-                });
+            this.updateKeyboard();
+            this.updateGamepads();
 
             this.components.timer.update();
             if (this.components.timer.isTimeUp()) {
@@ -165,17 +183,60 @@ class SceneGameOnePlayer extends Phaser.Scene {
             }
 
             if (Phaser.Input.Keyboard.JustDown(this.p2start)) {
+                this.hideHUD();
                 this.components.alertNewChallenger.launch();
+                this.theme.pause();
+                this.newChallengerSound.play();
                 this.time.delayedCall(2000, () => this.scene.start('sceneGameTwoPlayers'), [], this);
             }
         }
+    }
+
+    updateGamepads() {
+        this.input.gamepad.on('down', (pad, button) => {
+            const padIndex = pad.index;
+            if (padIndex !== 0 || this.currentQuestion < 0) {
+                return;
+            }
+            const buttonIndex = button.index;
+            const pressed = this.BUTTON_PRESS_STATES[padIndex][buttonIndex];
+            if (!pressed) {
+                const joypad = JOYPADS[padIndex];
+                const pressedButton = joypad.reverse_mapping[buttonIndex];
+                if (pressedButton) {
+                    const text = this.components.answers.texts[pressedButton.index];
+                    this.onPushButton(text, pressedButton.letter);
+                    this.components.buttons.push(pressedButton.letter);
+                }
+            }
+            this.BUTTON_PRESS_STATES[padIndex][buttonIndex] = true;
+        }, this);
+        this.input.gamepad.on('up', (pad, button) => this.BUTTON_PRESS_STATES[pad.index][button.index] = false, this);
+    }
+
+    updateKeyboard() {
+        ['A', 'B', 'C', 'D']
+            .forEach((button, i) => {
+                if (this.currentQuestion >= 0 && Phaser.Input.Keyboard.JustDown(this.buttons[button])) {
+                    this.onPushButton(this.components.answers.texts[i], button);
+                }
+                if (this.buttons[button].isDown) {
+                    this.components.buttons.push(button);
+                }
+            });
+    }
+
+    onPushButton(text, letter) {
+        this.onKeyDown(text);
+        this.components.buttons.getFeedBack(letter, Colors.color_P1);
+        this.nextQuestion();
     }
 
     onKeyDown(text) {
         if (this.isAnswerValid(text)) {
             return this.validSound.play();
         }
-        this.components.lifeBars.updatePlayer1Bar(() => {
+        this.components.lifeBars.updatePlayerBar(() => {
             this.lives--;
             if (this.lives <= 0) {
                 this.endNoMoreLifeGame();
@@ -190,6 +251,12 @@ class SceneGameOnePlayer extends Phaser.Scene {
 
     static isHiScore(score) {
         return Ranking.onePlayerScores().isHiScore(score);
+    }
+
+    hideHUD() {
+        this.components.logoWindow.hide();
+        this.components.buttons.hide();
+        this.components.answers.hide();
     }
 }
 

@@ -1,58 +1,94 @@
-const {CONTROLS_P1, CONTROLS_P2} = require('../controls');
-const Screen = require('../components/screen');
+const {CONTROLS_P1, CONTROLS_P2, JOYPADS} = require('../controls');
 const LOGOS = require('../domain/logos');
-const {INITIAL_REMAINING_TIME} = require('../domain/game');
 const Engine = require('../domain/engine');
+const Game = require('../domain/game');
 
-const {HealthBar} = require('../components/healthbar');
+const Background = require('../components/background');
+const Buttons = require('../components/buttons');
+const Answers = require('../components/answers');
+const Alert = require('../components/alert');
+const LogoWindow = require('../components/logo_window');
+const Timer = require('../components/timer');
+const LifeBars = require('../components/life-bars');
+const Colors = require('../components/colors');
+const CountDown = require('../components/countdown');
 
-var power;
-
-const color_P1 = 0xFBB03B;
-const color_P2 = 0x6C1D5F;
+const FREEZE_BETWEEN_QUESTION = 500;
 
 class SceneGameTwoPlayers extends Phaser.Scene {
     constructor() {
         super({key: 'sceneGameTwoPlayers'});
-        this.quiz = Engine.createQuizFrom(LOGOS);
-        this.currentQuestion = -1;
-        this.texts = [];
+        this.BUTTON_PRESS_STATES = {
+            0: {},
+            1: {},
+        };
+    }
+
+    init() {
+        this.components = {
+            background: new Background(this),
+            buttons: new Buttons(this),
+            answers: new Answers(this),
+            alertTimesUp: new Alert(this),
+            alertGameOver: new Alert(this),
+            alertPerfect: new Alert(this),
+            alertNewChallenger: new Alert(this),
+            logoWindow: new LogoWindow(this),
+            timer: new Timer(this),
+            lifeBars: new LifeBars(this),
+            countdown: new CountDown(this),
+        };
     }
 
     preload() {
-        this.load.audio('invalid', ['assets/audio/Jingle 011.wav']);
-        this.load.audio('valid', ['assets/audio/Notification 2.wav']);
+        this.components.background.preload();
+        this.components.buttons.preload();
+        this.components.logoWindow.preload(LOGOS);
+        this.components.timer.preload();
+        this.components.countdown.preload();
+        this.components.alertTimesUp.preload('TIMES_UP', 'assets/elements/TIMES_UP.png');
+        this.components.alertGameOver.preload('GAME_OVER', 'assets/elements/GAME_OVER.png');
+        this.components.alertPerfect.preload('PERFECT', 'assets/elements/PERFECT.png');
 
-        this.quiz.forEach(l => {
-            console.log(`Loading ${l.validAnswer.name} ... ${l.validAnswer.file}`);
-            return this.load.image(l.validAnswer.name, `assets/logos/re_${l.validAnswer.file}`);
-        });
+        this.load.path = 'assets/';
+        this.load.audio('theme', ['audio/remix.mp3']);
+        this.load.audio('invalid', ['audio/Jingle 011.wav']);
+        this.load.audio('valid', ['audio/Notification 2.wav']);
+        this.load.audio('sound_game_over', ['audio/theme_streetfighter/GAME_OVER.wav']);
+        this.load.audio('sound_perfect', ['audio/theme_streetfighter/PERFECT.wav']);
+        this.load.audio('sound_fight', ['audio/theme_streetfighter/FIGHT.wav']);
 
-        this.load.image('bg', 'assets/backgrounds/BG.png');
-        this.load.image('timer', 'assets/elements/TIMER.png');
-
-        this.load.image('BTN_A', 'assets/elements/BTN_A.png');
-        this.load.image('BTN_A_pressed', 'assets/elements/BTN_A_PRESS.png');
-        this.load.image('BTN_B', 'assets/elements/BTN_B.png');
-        this.load.image('BTN_B_pressed', 'assets/elements/BTN_B_PRESS.png');
-        this.load.image('BTN_C', 'assets/elements/BTN_C.png');
-        this.load.image('BTN_C_pressed', 'assets/elements/BTN_C_PRESS.png');
-        this.load.image('BTN_D', 'assets/elements/BTN_D.png');
-        this.load.image('BTN_D_pressed', 'assets/elements/BTN_D_PRESS.png');
-
-        this.load.image('WINDOW', 'assets/elements/WINDOW.png');
 
         this.buttons = {
             P1: {},
             P2: {}
         };
-        this.feedback = {};
     }
 
     create() {
-        this.bg = this.add.image(0, 0, 'bg').setOrigin(0);
-        this.bg.setScale(Screen.ZOOM);
-        this.bg.setZ(-1);
+        // GAME
+        this.quiz = Engine.createQuizFrom(LOGOS, Game.TWO_PLAYER_QUIZ_LENGTH);
+        this.currentQuestion = -1;
+        this.gameOver = false;
+
+        // UI
+        this.components.answers.create();
+        this.components.background.create();
+
+        this.components.buttons.create();
+        this.components.logoWindow.create();
+        this.components.lifeBars.create();
+        this.components.lifeBars.setPower(270 / (this.quiz.length / 2));
+
+        this.components.timer.create();
+        this.components.countdown.create();
+        this.components.alertTimesUp.create();
+        this.components.alertGameOver.create();
+        this.components.alertPerfect.create();
+
+        this.components.logoWindow.hide();
+
+        // INPUTS
 
         this.buttons.P1.A = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[CONTROLS_P1.A]);
         this.buttons.P1.B = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[CONTROLS_P1.B]);
@@ -64,280 +100,171 @@ class SceneGameTwoPlayers extends Phaser.Scene {
         this.buttons.P2.C = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[CONTROLS_P2.C]);
         this.buttons.P2.D = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[CONTROLS_P2.D]);
 
-
-        this.anims.create({
-            key: 'A_active',
-            frames: [
-                {key: 'BTN_A_pressed', duration: 50},
-                {key: 'BTN_A'}
-            ],
-            frameRate: 8,
-            repeat: 0
-        });
-        this.anims.create({
-            key: 'B_active',
-            frames: [
-                {key: 'BTN_B_pressed', duration: 50},
-                {key: 'BTN_B'}
-            ],
-            frameRate: 8,
-            repeat: 0
-        });
-        this.anims.create({
-            key: 'C_active',
-            frames: [
-                {key: 'BTN_C_pressed', duration: 50},
-                {key: 'BTN_C'}
-            ],
-            frameRate: 8,
-            repeat: 0
-        });
-        this.anims.create({
-            key: 'D_active',
-            frames: [
-                {key: 'BTN_D_pressed', duration: 50},
-                {key: 'BTN_D'}
-            ],
-            frameRate: 8,
-            repeat: 0
-        });
-
-
-        this.feedback.A = this.add.graphics();
-        this.feedback.A.beginPath();
-        this.feedback.A.fillStyle(0x000000);
-        this.feedback.A.arc(52, 313, 42, Phaser.Math.DegToRad(0), Phaser.Math.DegToRad(180), false, 0.2);
-        this.feedback.A.setScale(1, 0.5);
-        this.feedback.A.fillPath();
-        this.feedback.A.alpha = 0;
-
-        this.feedback.B = this.add.graphics();
-        this.feedback.B.beginPath();
-        this.feedback.B.fillStyle(0x000000);
-        this.feedback.B.arc(52, 493, 42, Phaser.Math.DegToRad(0), Phaser.Math.DegToRad(180), false, 0.2);
-        this.feedback.B.setScale(1, 0.5);
-        this.feedback.B.fillPath();
-        this.feedback.B.alpha = 0;
-
-        this.feedback.C = this.add.graphics();
-        this.feedback.C.beginPath();
-        this.feedback.C.fillStyle(0x000000);
-        this.feedback.C.arc(52, 673, 42, Phaser.Math.DegToRad(0), Phaser.Math.DegToRad(180), false, 0.2);
-        this.feedback.C.setScale(1, 0.5);
-        this.feedback.C.fillPath();
-        this.feedback.C.alpha = 0;
-
-        this.feedback.D = this.add.graphics();
-        this.feedback.D.beginPath();
-        this.feedback.D.fillStyle(0x000000);
-        this.feedback.D.arc(52, 853, 42, Phaser.Math.DegToRad(0), Phaser.Math.DegToRad(180), false, 0.2);
-        this.feedback.D.setScale(1, 0.5);
-        this.feedback.D.fillPath();
-        this.feedback.D.alpha = 0;
-
-
-        this.BTN_A = this.add.sprite(50, 150, 'BTN_A').setScale(Screen.ZOOM);
-        this.BTN_B = this.add.sprite(50, 240, 'BTN_B').setScale(Screen.ZOOM);
-        this.BTN_C = this.add.sprite(50, 330, 'BTN_C').setScale(Screen.ZOOM);
-        this.BTN_D = this.add.sprite(50, 420, 'BTN_D').setScale(Screen.ZOOM);
-
-        this.add.image(470, 280, 'WINDOW').setScale(Screen.ZOOM);
-
-
-        this.healthbarPlayerOne = new HealthBar(this, {
-            x: 25,
-            y: 27,
-            width: 270,
-            bar: {color: color_P1, direction: -1}
-        });
-
-        this.healthbarPlayerTwo = new HealthBar(this, {
-            x: Screen.WIDTH - 295,
-            y: 27,
-            width: 270,
-            bar: {color: color_P2, direction: 1}
-        });
-
-        this.health_P2 = { state: 270 - 4 };
-        this.health_P1 = { state: 270 - 4 };
-
-        power = this.health_P1.state / (this.quiz.length);
-
+        // SOUNDS
+        this.theme = this.sound.add('theme');
         this.validSound = this.sound.add('valid');
         this.invalidSound = this.sound.add('invalid');
+        this.gameOverSound = this.sound.add('sound_game_over');
+        this.perfectSound = this.sound.add('sound_perfect');
+        this.fightSound = this.sound.add('sound_fight');
 
-        this.timer = this.add.image(Screen.WIDTH / 2 - 55.5, 15, 'timer').setOrigin(0);
-        this.timer.setScale(1.8);
+        this.theme.play();
 
-        this.remainingTime = INITIAL_REMAINING_TIME;
-        this.time = this.add.text(305, 26, this.remainingTime, {font: `${Screen.FONT_SIZE}px VT323`});
-        this.start = new Date();
+        this.time.delayedCall(3000, () => {
+            this.fightSound.play();
+            this.components.logoWindow.show();
+            this.components.timer.launch();
+            this.nextQuestion();
+        }, [], this);
 
-        this.nextQuestion();
     }
 
     nextQuestion() {
-        this.currentQuestion++;
-
-        if (this.currentQuestion >= 20) {
+        if (this.currentQuestion == (this.quiz.length - 1)) {
             this.currentQuestion = 0;
-        }
-
-        if (this.logo) {
-            this.logo.setTexture(this.quiz[this.currentQuestion].validAnswer.name);
         } else {
-            this.logo = this.add.image(470, 280, this.quiz[this.currentQuestion].validAnswer.name).setScale(Screen.ZOOM);
+            this.currentQuestion++;
         }
 
-        let column = 0;
-
+        const logoName = this.quiz[this.currentQuestion].validAnswer.name;
+        this.components.logoWindow.update(logoName);
         const question = {
             answers: _.orderBy([
-                this.quiz[this.currentQuestion].validAnswer.name,
+                logoName,
                 this.quiz[this.currentQuestion].wrongAnswers[0].name,
                 this.quiz[this.currentQuestion].wrongAnswers[1].name,
                 this.quiz[this.currentQuestion].wrongAnswers[2].name,
             ]),
         };
-        for (let i = 0; i < 4; i++) {
-            if (this.texts[i]) {
-                this.texts[i].setText(question.answers[i]);
-            } else {
-                this.texts[i] = this.make.text({
-                    x: 100,
-                    y: 125 + (column++ * 90),
-                    text: question.answers[i],
-                    style: {
-                        font: `${Screen.FONT_SIZE}px VT323`,
-                        wordWrap: {width: 200, useAdvancedWrap: true}
-                    }
-                });
-            }
-        }
+        this.components.answers.update(question);
     }
 
+    goToEnterName() {
+        this.time.delayedCall(1000, () => this.scene.start('sceneEnterNameTwoPlayers', {
+            winner: this.whoWin(),
+            loser: this.whoLose()
+        }), [], this);
+    }
+
+    whoWin() {
+        return (this.components.lifeBars.watchPlayerLife().health_P1 > this.components.lifeBars.watchPlayerLife().health_P2) ? 1 : 2;
+    }
+
+    whoLose() {
+        return (this.components.lifeBars.watchPlayerLife().health_P1 < this.components.lifeBars.watchPlayerLife().health_P2) ? 1 : 2;
+    }
+
+    endOneDead() {
+        this.onEndGame();
+        this.gameOver = true;
+        this.components.alertGameOver.launch();
+        this.time.delayedCall(2000, () => this.scene.start('sceneLogo'), [], this);
+        this.gameOverSound.play();
+        this.goToEnterName();
+    }
+
+    endTimeUpGame() {
+        this.hideHUD();
+        this.gameOver = true;
+        this.components.alertTimesUp.launch();
+        this.time.delayedCall(2000, () => this.scene.start('sceneLogo'), [], this);
+    }
+
+    onEndGame() {
+        this.theme.pause();
+        this.hideHUD();
+    }
 
     update() {
-
-        this.healthbarPlayerOne.setProgress(this.health_P1.state);
-        this.healthbarPlayerTwo.setProgress(this.health_P2.state);
-
-        if (Phaser.Input.Keyboard.JustDown(this.buttons.P1.A)) {
-            this.onKeyDown(this.texts[0], 1);
-            this.getFeedBack(this.feedback.A, color_P1);
-            this.nextQuestion();
-        }
-        if (Phaser.Input.Keyboard.JustDown(this.buttons.P1.B)) {
-            this.onKeyDown(this.texts[1], 1);
-            this.getFeedBack(this.feedback.B, color_P1);
-            this.nextQuestion();
-        }
-        if (Phaser.Input.Keyboard.JustDown(this.buttons.P1.C)) {
-            this.onKeyDown(this.texts[2], 1);
-            this.getFeedBack(this.feedback.C, color_P1);
-            this.nextQuestion();
-        }
-        if (Phaser.Input.Keyboard.JustDown(this.buttons.P1.D)) {
-            this.onKeyDown(this.texts[3], 1);
-            this.getFeedBack(this.feedback.D, color_P1);
-            this.nextQuestion();
-        }
-
-        if (Phaser.Input.Keyboard.JustDown(this.buttons.P2.A)) {
-            this.onKeyDown(this.texts[0], 2);
-            this.getFeedBack(this.feedback.A, color_P2);
-            this.nextQuestion();
-        }
-        if (Phaser.Input.Keyboard.JustDown(this.buttons.P2.B)) {
-            this.onKeyDown(this.texts[1], 2);
-            this.getFeedBack(this.feedback.B, color_P2);
-            this.nextQuestion();
-        }
-        if (Phaser.Input.Keyboard.JustDown(this.buttons.P2.C)) {
-            this.onKeyDown(this.texts[2], 2);
-            this.getFeedBack(this.feedback.C, color_P2);
-            this.nextQuestion();
-        }
-        if (Phaser.Input.Keyboard.JustDown(this.buttons.P2.D)) {
-            this.onKeyDown(this.texts[3], 2);
-            this.getFeedBack(this.feedback.D, color_P2);
-            this.nextQuestion();
-        }
-
-        const elapsedTime = (new Date().getTime() - this.start.getTime()) / 1000;
-        this.remainingTime = Math.round(INITIAL_REMAINING_TIME - elapsedTime);
-        this.time.setText(this.remainingTime);
-
-
-        //END
-        if (this.remainingTime == 0 || this.health_P1.state <= 5 || this.health_P2.state <= 5) {
-            console.log('End of Game');
-            this.start('sceneEnternameTwoPlayers', {player_one: this.health_P1, player_two: this.health_P2});
-        }
-
-
-        if ((this.buttons.P1.A).isDown || (this.buttons.P2.A).isDown) {
-            this.BTN_A.play('A_active');
-        }
-        if ((this.buttons.P1.B).isDown || (this.buttons.P2.B).isDown) {
-            this.BTN_B.play('B_active');
-        }
-        if ((this.buttons.P1.C).isDown || (this.buttons.P2.C).isDown) {
-            this.BTN_C.play('C_active');
-        }
-        if ((this.buttons.P1.D).isDown || (this.buttons.P2.D).isDown) {
-            this.BTN_D.play('D_active');
-        }
-    }
-
-    getFeedBack(target, color) {
-        target.fillStyle(color);
-        target.lineStyle(2, color);
-        target.fillPath();
-        target.strokePath();
-
-        this.tweens.timeline({
-            targets: target,
-            ease: 'Power1',
-            duration: 100,
-            tweens: [
-                {
-                    alpha: 1,
-                }],
-            yoyo: true
-        });
-    }
-
-    onKeyDown(text, player) {
-        const valid = text._text === this.quiz[this.currentQuestion].validAnswer.name;
-        if (valid) {
-            this.validSound.play();
-
-            if (player == 1) {
-
-                this.tweens.timeline({
-                    targets: this.health_P2,
-                    ease: 'Power1',
-                    duration: 1000,
-                    tweens: [
-                        {
-                            state: this.health_P2.state - power
-                        }]
-                });
-            } else {
-                this.tweens.timeline({
-                    targets: this.health_P1,
-                    ease: 'Power1',
-                    duration: 1000,
-                    tweens: [
-                        {
-                            state: this.health_P1.state - power
-                        }]
-                });
+        if (!this.gameOver) {
+            if (!this.freezed) {
+                this.components.lifeBars.updatePlayer1Progress();
+                this.components.lifeBars.updatePlayer2Progress();
+                this.updateKeyboard();
+                this.updateGamepads();
             }
-        } else {
-            this.invalidSound.play();
+
+            this.components.timer.update();
+            if (this.components.timer.isTimeUp()) {
+                return this.endTimeUpGame();
+            }
         }
+    }
+
+    updateKeyboard() {
+        ['A', 'B', 'C', 'D']
+            .forEach((button, i) => {
+                if (this.currentQuestion >= 0 && Phaser.Input.Keyboard.JustDown(this.buttons.P1[button])) {
+                    const text = this.components.answers.texts[i];
+                    const letter = button;
+                    this.onPushButton(text, letter, 1);
+
+                } else if (this.currentQuestion >= 0 && Phaser.Input.Keyboard.JustDown(this.buttons.P2[button])) {
+                    const text = this.components.answers.texts[i];
+                    const letter = button;
+                    this.onPushButton(text, letter, 2);
+                }
+                if (this.buttons.P1[button].isDown || this.buttons.P2[button].isDown) {
+                    this.components.buttons.push(button);
+                }
+            });
+    }
+
+    updateGamepads() {
+        this.input.gamepad.once('down', (pad, button) => {
+            const padIndex = pad.index;
+            if (padIndex !== 0 || this.currentQuestion < 0) {
+                return;
+            }
+            const buttonIndex = button.index;
+            const pressed = this.BUTTON_PRESS_STATES[padIndex][buttonIndex];
+            if (!pressed) {
+                const joypad = JOYPADS[padIndex];
+                const pressedButton = joypad.reverse_mapping[buttonIndex];
+                if (pressedButton) {
+                    const text = this.components.answers.texts[pressedButton.index];
+                    this.onPushButton(text, pressedButton.letter, 1);
+                    this.components.buttons.push(pressedButton.letter);
+                }
+            }
+            this.BUTTON_PRESS_STATES[padIndex][buttonIndex] = true;
+        }, this);
+        this.input.gamepad.on('up', (pad, button) => this.BUTTON_PRESS_STATES[pad.index][button.index] = false, this);
+    }
+
+    onPushButton(text, letter, player) {
+        this.freezed = true;
+        this.onKeyDown(text, player);
+        this.components.buttons.getFeedBack(letter, player === 1 ? Colors.color_P1 : Colors.color_P2);
+        setTimeout(() => {
+            this.nextQuestion();
+            this.freezed = false;
+        }, FREEZE_BETWEEN_QUESTION);
+    }
+
+    onKeyDown(text, player = 1) {
+        const onComplete = () => {
+            if ((this.components.lifeBars.watchPlayerLife().health_P1 <= 0) || (this.components.lifeBars.watchPlayerLife().health_P2 <= 0)) {
+                this.endOneDead();
+            }
+        };
+
+        if (this.isAnswerValid(text)) {
+            this.components.lifeBars.updatePlayerBarMode2Players(onComplete, player === 1 ? 2 : 1);
+            return this.validSound.play();
+        }
+        this.components.lifeBars.updatePlayerBarMode2Players(onComplete, player);
+        this.invalidSound.play();
+    }
+
+    isAnswerValid(text) {
+        return text._text === this.quiz[this.currentQuestion].validAnswer.name;
+    }
+
+    hideHUD() {
+        this.components.logoWindow.hide();
+        this.components.buttons.hide();
+        this.components.answers.hide();
     }
 }
 

@@ -15,6 +15,9 @@ const config = {
     pixelArt: true,
     width: Screen.WIDTH,
     height: Screen.HEIGHT,
+    input: {
+        gamepad: true
+    },
     scene: [
         SceneLogo,
         SceneTitle,

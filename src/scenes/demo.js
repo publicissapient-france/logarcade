@@ -67,11 +67,13 @@ class SceneDemo extends Phaser.Scene {
         const buttons = ['A', 'B', 'C', 'D'];
         this.onKeyDown(this.components.answers.texts[index]);
         this.components.buttons.getFeedBack(buttons[index], Colors.color_P1);
+        this.components.buttons.push(buttons[index]);
+
         this.nextQuestion();
     }
 
     onKeyDown(text) {
-        this.components.lifeBars.updatePlayer1Bar(() => {
+        this.components.lifeBars.updatePlayerBar(() => {
             this.lives--;
         });
     }
@@ -94,20 +96,6 @@ class SceneDemo extends Phaser.Scene {
 
     update() {
         this.components.lifeBars.updatePlayer1Progress();
-
-        /*
-        ['A', 'B', 'C', 'D']
-            .forEach((button, i) => {
-                if (Phaser.Input.Keyboard.JustDown(this.buttons[button])) {
-                    this.onKeyDown(this.components.answers.texts[i]);
-                    this.components.buttons.getFeedBack(button, Colors.color_P1);
-                    this.nextQuestion();
-                }
-                if (this.buttons[button].isDown) {
-                    this.components.buttons.push(button);
-                }
-            });
-        */
         this.components.timer.update();
         this.actions.startGame.update();
     }

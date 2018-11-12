@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const Screen = require('../components/screen');
 const Game = require('../domain/game');
-const {CONTROLS_P1, CONTROLS_P2} = require('../controls');
+const {CONTROLS_P1, CONTROLS_P2, JOYPADS} = require('../controls');
 const Ranking = require('../domain/ranking');
 const Background = require('../components/background');
 const TitleBanner = require('../components/title-banner');
@@ -20,6 +20,10 @@ const LETTERS = [
 class SceneEnterNameTwoPlayers extends Phaser.Scene {
     constructor() {
         super({key: 'sceneEnterNameTwoPlayers'});
+        this.BUTTON_PRESS_STATES = {
+            0: {},
+            1: {},
+        }
     }
 
     init() {
@@ -69,7 +73,8 @@ class SceneEnterNameTwoPlayers extends Phaser.Scene {
             }
         };
 
-        this.score = data.score;
+        this.winner = data.winner;
+        this.loser = data.loser;
 
         this.components.background.create();
         this.components.titleBanner.create('      ENTER YOUR NAMES      ');
@@ -130,48 +135,134 @@ class SceneEnterNameTwoPlayers extends Phaser.Scene {
     update() {
         ['1', '2'].forEach(player => {
             if (!this.players[player].validated) {
-                if (Phaser.Input.Keyboard.JustDown(this.players[player].buttons.RIGHT)) {
-                    this.players[player].selectedIndex++;
-                    this.selectLetter(player);
-                    this.highlightSelected(player);
-                }
-                if (Phaser.Input.Keyboard.JustDown(this.players[player].buttons.LEFT)) {
-                    this.players[player].selectedIndex--;
-                    this.selectLetter(player);
-                    this.highlightSelected(player);
-                }
-                if (Phaser.Input.Keyboard.JustDown(this.players[player].buttons.DOWN)) {
-                    this.players[player].selectedIndex += 6;
-                    this.selectLetter(player);
-                    this.highlightSelected(player);
-                }
-                if (Phaser.Input.Keyboard.JustDown(this.players[player].buttons.UP)) {
-                    this.players[player].selectedIndex -= 6;
-                    this.selectLetter(player);
-                    this.highlightSelected(player);
-                }
-                if (Phaser.Input.Keyboard.JustDown(this.players[player].buttons.A)) {
-                    switch ((this.players[player].selected)) {
-                        case 'DEL':
-                            this.removeLastCharacter(player);
-                            break;
-                        case 'END':
-                            this.validateName(player);
-                            break;
-                        default:
-                            if (this.players[player].nameValue.length < Game.MAX_NAME_LENGTH) {
-                                this.players[player].nameValue += this.players[player].selected;
-                                this.soundSelected.play();
-                            }
-                    }
-                    this.updateName(player);
-                }
-                if (Phaser.Input.Keyboard.JustDown(this.players[player].buttons.B)) {
-                    this.removeLastCharacter(player);
-                    this.updateName(player);
-                }
+                this.updateKeyboard(player);
+                this.updateGamepad(player);
             }
         });
+    }
+
+    updateGamepad(player) {
+        const gamepadIndex = player - 1;
+        const gamepad = this.input.gamepad.gamepads[gamepadIndex];
+        if (!gamepad) {
+            return;
+        }
+        const horizontalAxis = gamepad.axes[4];
+        const verticalAxis = gamepad.axes[5];
+        const states = this.BUTTON_PRESS_STATES[0];
+        if (!states.UP && verticalAxis.getValue() < 0) {
+            states.UP = true;
+            this.onUp(player);
+        }
+        if (!states.DOWN && verticalAxis.getValue() > 0) {
+            states.DOWN = true;
+            this.onDown(player);
+        }
+        if (!states.LEFT && horizontalAxis.getValue() < 0) {
+            states.LEFT = true;
+            this.onLeft(player);
+        }
+        if (!states.RIGHT && horizontalAxis.getValue() > 0) {
+            states.RIGHT = true;
+            this.onRight(player);
+        }
+
+        if (horizontalAxis.getValue() === 0 && verticalAxis.getValue() === 0) {
+            states.UP = false;
+            states.DOWN = false;
+            states.LEFT = false;
+            states.RIGHT = false;
+        }
+
+        this.input.gamepad.on('down', (pad, button) => {
+            const padIndex = pad.index;
+            const buttonIndex = button.index;
+            const state = this.BUTTON_PRESS_STATES[padIndex][buttonIndex];
+            if (!state && padIndex === 0) {
+                const joypad = JOYPADS[padIndex];
+                const pressedButton = joypad.reverse_mapping[buttonIndex];
+                if (pressedButton) {
+                    const letter = joypad.reverse_mapping[buttonIndex].letter;
+                    switch (letter) {
+                        case 'A':
+                            this.onA(player);
+                            break;
+                        case 'B':
+                            this.onB(player);
+                            break;
+                    }
+                }
+            }
+            this.BUTTON_PRESS_STATES[padIndex][buttonIndex] = true;
+        }, this);
+        this.input.gamepad.on('up', (pad, button) => this.BUTTON_PRESS_STATES[pad.index][button.index] = false, this);
+    }
+
+    updateKeyboard(player) {
+        if (Phaser.Input.Keyboard.JustDown(this.players[player].buttons.RIGHT)) {
+            this.onRight(player);
+        }
+        if (Phaser.Input.Keyboard.JustDown(this.players[player].buttons.LEFT)) {
+            this.onLeft(player);
+        }
+        if (Phaser.Input.Keyboard.JustDown(this.players[player].buttons.DOWN)) {
+            this.onDown(player);
+        }
+        if (Phaser.Input.Keyboard.JustDown(this.players[player].buttons.UP)) {
+            this.onUp(player);
+        }
+        if (Phaser.Input.Keyboard.JustDown(this.players[player].buttons.A)) {
+            this.onA(player);
+        }
+        if (Phaser.Input.Keyboard.JustDown(this.players[player].buttons.B)) {
+            this.onB(player);
+        }
+    }
+
+    onB(player) {
+        this.removeLastCharacter(player);
+        this.updateName(player);
+    }
+
+    onA(player) {
+        switch ((this.players[player].selected)) {
+            case 'DEL':
+                this.removeLastCharacter(player);
+                break;
+            case 'END':
+                this.validateName(player);
+                break;
+            default:
+                if (this.players[player].nameValue.length < Game.MAX_NAME_LENGTH) {
+                    this.players[player].nameValue += this.players[player].selected;
+                    this.soundSelected.play();
+                }
+        }
+        this.updateName(player);
+    }
+
+    onUp(player) {
+        this.players[player].selectedIndex -= 6;
+        this.selectLetter(player);
+        this.highlightSelected(player);
+    }
+
+    onDown(player) {
+        this.players[player].selectedIndex += 6;
+        this.selectLetter(player);
+        this.highlightSelected(player);
+    }
+
+    onLeft(player) {
+        this.players[player].selectedIndex--;
+        this.selectLetter(player);
+        this.highlightSelected(player);
+    }
+
+    onRight(player) {
+        this.players[player].selectedIndex++;
+        this.selectLetter(player);
+        this.highlightSelected(player);
     }
 
     removeLastCharacter(player) {
@@ -186,8 +277,11 @@ class SceneEnterNameTwoPlayers extends Phaser.Scene {
         this.players[player].letters.forEach(letter => letter.setVisible(false));
 
         if (this.players['1'].validated && this.players['2'].validated) {
-            // TODO
-            // Ranking.onePlayerScores().add({player: this.nameValue, time: this.score});
+            const score = {
+                winner: this.players[this.winner].nameValue,
+                loser: this.players[this.loser].nameValue
+            };
+            Ranking.twoPlayerScores().add(score);
             this.scene.start('sceneScoresTwoPlayers');
             this.soundEnded.play();
         }

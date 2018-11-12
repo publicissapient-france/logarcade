@@ -1,4 +1,4 @@
-# logarcade
+# King Of Logo
 
 C'est le jeu d'arcade de la Xebicon 2018.
 
