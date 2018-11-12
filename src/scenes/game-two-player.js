@@ -142,25 +142,29 @@ class SceneGameTwoPlayers extends Phaser.Scene {
     }
 
     endOneDead() {
+        this.hideHUD();
         this.gameOver = true;
         this.components.alertGameOver.launch();
-        this.time.delayedCall(5000, () => this.scene.start('sceneLogo'), [], this);
+        this.time.delayedCall(2000, () => this.scene.start('sceneLogo'), [], this);
         this.goToEnterName();
     }
 
     endTimeUpGame() {
+        this.hideHUD();
         this.gameOver = true;
         this.components.alertTimesUp.launch();
-        this.time.delayedCall(3000, () => this.scene.start('sceneLogo'), [], this);
+        this.time.delayedCall(2000, () => this.scene.start('sceneLogo'), [], this);
+    }
+
+    onEndGame() {
+        this.hideHUD();
     }
 
     update() {
         if (!this.gameOver) {
-            console.log(this.freezed);
             if (!this.freezed) {
                 this.components.lifeBars.updatePlayer1Progress();
                 this.components.lifeBars.updatePlayer2Progress();
-                console.log('UPDATE KB and GP');
                 this.updateKeyboard();
                 this.updateGamepads();
             }
@@ -239,6 +243,12 @@ class SceneGameTwoPlayers extends Phaser.Scene {
 
     isAnswerValid(text) {
         return text._text === this.quiz[this.currentQuestion].validAnswer.name;
+    }
+
+    hideHUD() {
+        this.components.logoWindow.hide();
+        this.components.buttons.hide();
+        this.components.answers.hide();
     }
 }
 

@@ -98,6 +98,11 @@ class SceneEnterNameOnePlayer extends Phaser.Scene {
     }
 
     update() {
+        this.updateKeyboard();
+        this.updateGamepad();
+    }
+
+    updateKeyboard() {
         if (Phaser.Input.Keyboard.JustDown(this.buttons.RIGHT)) {
             this.onRight();
         }
@@ -116,8 +121,6 @@ class SceneEnterNameOnePlayer extends Phaser.Scene {
         if (Phaser.Input.Keyboard.JustDown(this.buttons.B)) {
             this.onB();
         }
-
-        this.updateGamepad();
     }
 
     updateGamepad() {
