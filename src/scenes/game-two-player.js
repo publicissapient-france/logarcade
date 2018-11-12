@@ -45,7 +45,7 @@ class SceneGameTwoPlayers extends Phaser.Scene {
         this.components.buttons.preload();
         this.components.logoWindow.preload(LOGOS);
         this.components.timer.preload();
-
+        this.components.countdown.preload();
         this.components.alertTimesUp.preload('TIMES_UP', 'assets/elements/TIMES_UP.png');
         this.components.alertGameOver.preload('GAME_OVER', 'assets/elements/GAME_OVER.png');
         this.components.alertPerfect.preload('PERFECT', 'assets/elements/PERFECT.png');
@@ -54,6 +54,10 @@ class SceneGameTwoPlayers extends Phaser.Scene {
         this.load.audio('theme', ['audio/remix.mp3']);
         this.load.audio('invalid', ['audio/Jingle 011.wav']);
         this.load.audio('valid', ['audio/Notification 2.wav']);
+        this.load.audio('sound_game_over', ['audio/theme_streetfighter/GAME_OVER.wav']);
+        this.load.audio('sound_perfect', ['audio/theme_streetfighter/PERFECT.wav']);
+        this.load.audio('sound_fight', ['audio/theme_streetfighter/FIGHT.wav']);
+
 
         this.buttons = {
             P1: {},
@@ -97,11 +101,17 @@ class SceneGameTwoPlayers extends Phaser.Scene {
         this.buttons.P2.D = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[CONTROLS_P2.D]);
 
         // SOUNDS
-        this.sound.add('theme').play();
+        this.theme = this.sound.add('theme');
         this.validSound = this.sound.add('valid');
         this.invalidSound = this.sound.add('invalid');
+        this.gameOverSound = this.sound.add('sound_game_over');
+        this.perfectSound = this.sound.add('sound_perfect');
+        this.fightSound = this.sound.add('sound_fight');
+
+        this.theme.play();
 
         this.time.delayedCall(3000, () => {
+            this.fightSound.play();
             this.components.logoWindow.show();
             this.components.timer.launch();
             this.nextQuestion();
@@ -145,10 +155,11 @@ class SceneGameTwoPlayers extends Phaser.Scene {
     }
 
     endOneDead() {
-        this.hideHUD();
+        this.onEndGame();
         this.gameOver = true;
         this.components.alertGameOver.launch();
         this.time.delayedCall(2000, () => this.scene.start('sceneLogo'), [], this);
+        this.gameOverSound.play();
         this.goToEnterName();
     }
 
@@ -160,6 +171,7 @@ class SceneGameTwoPlayers extends Phaser.Scene {
     }
 
     onEndGame() {
+        this.theme.pause();
         this.hideHUD();
     }
 

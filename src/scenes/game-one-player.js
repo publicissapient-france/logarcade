@@ -44,6 +44,7 @@ class SceneGameOnePlayer extends Phaser.Scene {
         this.components.buttons.preload();
         this.components.logoWindow.preload(LOGOS);
         this.components.timer.preload();
+        this.components.countdown.preload();
         this.components.alertTimesUp.preload('TIMES_UP', 'assets/elements/TIMES_UP.png');
         this.components.alertGameOver.preload('GAME_OVER', 'assets/elements/GAME_OVER.png');
         this.components.alertPerfect.preload('PERFECT', 'assets/elements/PERFECT.png');
@@ -53,6 +54,10 @@ class SceneGameOnePlayer extends Phaser.Scene {
         this.load.audio('theme', ['audio/remix.mp3']);
         this.load.audio('invalid', ['audio/Jingle 011.wav']);
         this.load.audio('valid', ['audio/Notification 2.wav']);
+        this.load.audio('sound_game_over', ['audio/theme_streetfighter/GAME_OVER.wav']);
+        this.load.audio('sound_perfect', ['audio/theme_streetfighter/PERFECT.wav']);
+        this.load.audio('sound_fight', ['audio/theme_streetfighter/FIGHT.wav']);
+        this.load.audio('sound_new_challenger', ['audio/theme_streetfighter/NEW_CHALLENGER.wav']);
 
         this.buttons = {};
     }
@@ -92,8 +97,13 @@ class SceneGameOnePlayer extends Phaser.Scene {
         this.theme.play();
         this.validSound = this.sound.add('valid');
         this.invalidSound = this.sound.add('invalid');
+        this.gameOverSound = this.sound.add('sound_game_over');
+        this.perfectSound = this.sound.add('sound_perfect');
+        this.fightSound = this.sound.add('sound_fight');
+        this.newChallengerSound = this.sound.add('sound_new_challenger');
 
         this.time.delayedCall(3000, () => {
+            this.fightSound.play();
             this.components.timer.launch();
             this.components.logoWindow.show();
             this.nextQuestion();
@@ -132,6 +142,7 @@ class SceneGameOnePlayer extends Phaser.Scene {
     endPerfectGame() {
         this.onEndGame();
         this.gameOver = true;
+        this.perfectSound.play();
         this.components.alertPerfect.launch();
         const elapsedTime = this.components.timer.getElapsedTime();
         if (SceneGameOnePlayer.isHiScore(elapsedTime)) {
@@ -144,7 +155,8 @@ class SceneGameOnePlayer extends Phaser.Scene {
         this.onEndGame();
         this.gameOver = true;
         this.components.alertGameOver.launch();
-        this.time.delayedCall(5000, () => this.scene.start('sceneLogo'), [], this);
+        this.time.delayedCall(4000, () => this.scene.start('sceneLogo'), [], this);
+        this.gameOverSound.play();
     }
 
     endTimeUpGame() {
@@ -171,7 +183,10 @@ class SceneGameOnePlayer extends Phaser.Scene {
             }
 
             if (Phaser.Input.Keyboard.JustDown(this.p2start)) {
+                this.hideHUD();
                 this.components.alertNewChallenger.launch();
+                this.theme.pause();
+                this.newChallengerSound.play();
                 this.time.delayedCall(2000, () => this.scene.start('sceneGameTwoPlayers'), [], this);
             }
         }
@@ -213,7 +228,6 @@ class SceneGameOnePlayer extends Phaser.Scene {
 
     onPushButton(text, letter) {
         this.onKeyDown(text);
-        console.log(letter);
         this.components.buttons.getFeedBack(letter, Colors.color_P1);
         this.nextQuestion();
     }
