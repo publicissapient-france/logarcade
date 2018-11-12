@@ -1,4 +1,4 @@
-const {CONTROLS_P1, CONTROLS_P2} = require('../controls');
+const {CONTROLS_P1, CONTROLS_P2, JOYPADS} = require('../controls');
 const LOGOS = require('../domain/logos');
 const Engine = require('../domain/engine');
 const Game = require('../domain/game');
@@ -17,6 +17,10 @@ const CountDown = require('../components/countdown');
 class SceneGameOnePlayer extends Phaser.Scene {
     constructor() {
         super({key: 'sceneGameOnePlayer'});
+        this.BUTTON_PRESS_STATES = {
+            0: {},
+            1: {},
+        }
     }
 
     init() {
@@ -132,6 +136,7 @@ class SceneGameOnePlayer extends Phaser.Scene {
         }
         this.goToLogo();
     }
+
     endNoMoreLifeGame() {
         this.onEndGame();
         this.gameOver = true;
@@ -154,18 +159,8 @@ class SceneGameOnePlayer extends Phaser.Scene {
     update() {
         if (!this.gameOver) {
             this.components.lifeBars.updatePlayer1Progress();
-
-            ['A', 'B', 'C', 'D']
-                .forEach((button, i) => {
-                    if (this.currentQuestion >= 0  && Phaser.Input.Keyboard.JustDown(this.buttons[button])) {
-                        this.onKeyDown(this.components.answers.texts[i]);
-                        this.components.buttons.getFeedBack(button, Colors.color_P1);
-                        this.nextQuestion();
-                    }
-                    if (this.buttons[button].isDown) {
-                        this.components.buttons.push(button);
-                    }
-                });
+            this.updateKeyboard();
+            this.updateGamepads();
 
             this.components.timer.update();
             if (this.components.timer.isTimeUp()) {
@@ -179,11 +174,50 @@ class SceneGameOnePlayer extends Phaser.Scene {
         }
     }
 
+    updateGamepads() {
+        this.input.gamepad.on('down', (pad, button) => {
+            const padIndex = pad.index;
+            if (padIndex !== 0 || this.currentQuestion < 0) {
+                return;
+            }
+            const buttonIndex = button.index;
+            const pressed = this.BUTTON_PRESS_STATES[padIndex][buttonIndex];
+            if (!pressed) {
+                const joypad = JOYPADS[padIndex];
+                const pressedButton = joypad.reverse_mapping[buttonIndex];
+                if (pressedButton) {
+                    const text = this.components.answers.texts[pressedButton.index];
+                    this.onPushButton(text, pressedButton.letter);
+                }
+            }
+            this.BUTTON_PRESS_STATES[padIndex][buttonIndex] = true;
+        }, this);
+        this.input.gamepad.on('up', (pad, button) => this.BUTTON_PRESS_STATES[pad.index][button.index] = false, this);
+    }
+
+    updateKeyboard() {
+        ['A', 'B', 'C', 'D']
+            .forEach((button, i) => {
+                if (this.currentQuestion >= 0 && Phaser.Input.Keyboard.JustDown(this.buttons[button])) {
+                    this.onPushButton(this.components.answers.texts[i], button);
+                }
+                if (this.buttons[button].isDown) {
+                    this.components.buttons.push(button);
+                }
+            });
+    }
+
+    onPushButton(text, letter) {
+        this.onKeyDown(text);
+        this.components.buttons.getFeedBack(letter, Colors.color_P1);
+        this.nextQuestion();
+    }
+
     onKeyDown(text) {
         if (this.isAnswerValid(text)) {
             return this.validSound.play();
         }
-        this.components.lifeBars.updatePlayerBar( () => {
+        this.components.lifeBars.updatePlayerBar(() => {
             this.lives--;
             if (this.lives <= 0) {
                 this.endNoMoreLifeGame();
