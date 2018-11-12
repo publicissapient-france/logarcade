@@ -212,6 +212,7 @@ class SceneGameTwoPlayers extends Phaser.Scene {
                 if (pressedButton) {
                     const text = this.components.answers.texts[pressedButton.index];
                     this.onPushButton(text, pressedButton.letter, 1);
+                    this.components.buttons.push(pressedButton.letter);
                 }
             }
             this.BUTTON_PRESS_STATES[padIndex][buttonIndex] = true;

@@ -191,6 +191,7 @@ class SceneGameOnePlayer extends Phaser.Scene {
                 if (pressedButton) {
                     const text = this.components.answers.texts[pressedButton.index];
                     this.onPushButton(text, pressedButton.letter);
+                    this.components.buttons.push(pressedButton.letter);
                 }
             }
             this.BUTTON_PRESS_STATES[padIndex][buttonIndex] = true;
@@ -212,6 +213,7 @@ class SceneGameOnePlayer extends Phaser.Scene {
 
     onPushButton(text, letter) {
         this.onKeyDown(text);
+        console.log(letter);
         this.components.buttons.getFeedBack(letter, Colors.color_P1);
         this.nextQuestion();
     }
