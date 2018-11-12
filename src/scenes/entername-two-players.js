@@ -277,12 +277,11 @@ class SceneEnterNameTwoPlayers extends Phaser.Scene {
         this.players[player].letters.forEach(letter => letter.setVisible(false));
 
         if (this.players['1'].validated && this.players['2'].validated) {
-
-            Ranking.twoPlayerScores().add({
+            const score = {
                 winner: this.players[this.winner].nameValue,
                 loser: this.players[this.loser].nameValue
-            });
-
+            };
+            Ranking.twoPlayerScores().add(score);
             this.scene.start('sceneScoresTwoPlayers');
             this.soundEnded.play();
         }
