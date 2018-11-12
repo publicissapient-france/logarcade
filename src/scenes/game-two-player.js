@@ -82,6 +82,8 @@ class SceneGameTwoPlayers extends Phaser.Scene {
         this.components.alertGameOver.create();
         this.components.alertPerfect.create();
 
+        this.components.logoWindow.hide();
+
         // INPUTS
 
         this.buttons.P1.A = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[CONTROLS_P1.A]);
@@ -100,6 +102,7 @@ class SceneGameTwoPlayers extends Phaser.Scene {
         this.invalidSound = this.sound.add('invalid');
 
         this.time.delayedCall(3000, () => {
+            this.components.logoWindow.show();
             this.components.timer.launch();
             this.nextQuestion();
         }, [], this);

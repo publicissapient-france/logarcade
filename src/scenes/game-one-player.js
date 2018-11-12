@@ -78,6 +78,8 @@ class SceneGameOnePlayer extends Phaser.Scene {
         this.components.alertPerfect.create();
         this.components.alertNewChallenger.create();
 
+        this.components.logoWindow.hide();
+
         // INPUTS
         this.buttons.A = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[CONTROLS_P1.A]);
         this.buttons.B = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[CONTROLS_P1.B]);
@@ -93,6 +95,7 @@ class SceneGameOnePlayer extends Phaser.Scene {
 
         this.time.delayedCall(3000, () => {
             this.components.timer.launch();
+            this.components.logoWindow.show();
             this.nextQuestion();
         }, [], this);
 
