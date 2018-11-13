@@ -243,27 +243,35 @@ class SceneEnterNameTwoPlayers extends Phaser.Scene {
     }
 
     onUp(player) {
-        this.players[player].selectedIndex -= 6;
-        this.selectLetter(player);
-        this.highlightSelected(player);
+        if (this.players[player].selectedIndex > 5) {
+            this.players[player].selectedIndex -= 6;
+            this.selectLetter(player);
+            this.highlightSelected(player);
+        }
     }
 
     onDown(player) {
-        this.players[player].selectedIndex += 6;
-        this.selectLetter(player);
-        this.highlightSelected(player);
+        if (this.players[player].selectedIndex < 24) {
+            this.players[player].selectedIndex += 6;
+            this.selectLetter(player);
+            this.highlightSelected(player);
+        }
     }
 
     onLeft(player) {
-        this.players[player].selectedIndex--;
-        this.selectLetter(player);
-        this.highlightSelected(player);
+        if (this.players[player].selectedIndex % 6 !== 0) {
+            this.players[player].selectedIndex--;
+            this.selectLetter(player);
+            this.highlightSelected(player);
+        }
     }
 
     onRight(player) {
-        this.players[player].selectedIndex++;
-        this.selectLetter(player);
-        this.highlightSelected(player);
+        if ((this.players[player].selectedIndex + 1) % 6 !== 0 && this.players[player].selectedIndex < (LETTERS.length - 1)) {
+            this.players[player].selectedIndex++;
+            this.selectLetter(player);
+            this.highlightSelected(player);
+        }
     }
 
     removeLastCharacter(player) {
