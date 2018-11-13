@@ -202,27 +202,35 @@ class SceneEnterNameOnePlayer extends Phaser.Scene {
     }
 
     onUp() {
-        this.selectedIndex -= 6;
-        this.selectLetter();
-        this.highlightSelected();
+        if (this.selectedIndex > 5) {
+            this.selectedIndex -= 6;
+            this.selectLetter();
+            this.highlightSelected();
+        }
     }
 
     onDown() {
-        this.selectedIndex += 6;
-        this.selectLetter();
-        this.highlightSelected();
+        if (this.selectedIndex < 24) {
+            this.selectedIndex += 6;
+            this.selectLetter();
+            this.highlightSelected();
+        }
     }
 
     onLeft() {
-        this.selectedIndex--;
-        this.selectLetter();
-        this.highlightSelected();
+        if (this.selectedIndex % 6 !== 0) {
+            this.selectedIndex--;
+            this.selectLetter();
+            this.highlightSelected();
+        }
     }
 
     onRight() {
-        this.selectedIndex++;
-        this.selectLetter();
-        this.highlightSelected();
+        if ((this.selectedIndex + 1) % 6 !== 0 && this.selectedIndex < (LETTERS.length - 1)) {
+            this.selectedIndex++;
+            this.selectLetter();
+            this.highlightSelected();
+        }
     }
 
     removeLastCharacter() {
