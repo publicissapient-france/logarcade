@@ -207,33 +207,43 @@ class SceneGameOnePlayer extends Phaser.Scene {
             }
 
             if (Phaser.Input.Keyboard.JustDown(this.p2start)) {
-                this.hideHUD();
-                this.components.alertNewChallenger.launch();
-                this.theme.pause();
-                this.newChallengerSound.play();
-                this.time.delayedCall(2000, () => this.scene.start('sceneGameTwoPlayers'), [], this);
+                this.onNewChallenger();
             }
         }
+    }
+
+    onNewChallenger() {
+        this.hideHUD();
+        this.components.alertNewChallenger.launch();
+        this.theme.pause();
+        this.newChallengerSound.play();
+        this.time.delayedCall(2000, () => this.scene.start('sceneGameTwoPlayers'), [], this);
     }
 
     updateGamepads() {
         this.input.gamepad.on('down', (pad, button) => {
             const padIndex = pad.index;
-            if (padIndex !== 0 || this.currentQuestion < 0) {
+            if (this.currentQuestion < 0) {
                 return;
             }
             const buttonIndex = button.index;
             const pressed = this.BUTTON_PRESS_STATES[padIndex][buttonIndex];
+
             if (!pressed) {
                 const joypad = JOYPADS[padIndex];
+                if (joypad.mapping[buttonIndex] === 'START') {
+                    this.onNewChallenger();
+                }
+
                 const pressedButton = joypad.reverse_mapping[buttonIndex];
                 if (pressedButton) {
                     const text = this.components.answers.texts[pressedButton.index];
                     this.onPushButton(text, pressedButton.letter);
                     this.components.buttons.push(pressedButton.letter);
+
                 }
+                this.BUTTON_PRESS_STATES[padIndex][buttonIndex] = true;
             }
-            this.BUTTON_PRESS_STATES[padIndex][buttonIndex] = true;
         }, this);
         this.input.gamepad.on('up', (pad, button) => this.BUTTON_PRESS_STATES[pad.index][button.index] = false, this);
     }

@@ -136,59 +136,60 @@ class SceneEnterNameTwoPlayers extends Phaser.Scene {
         ['1', '2'].forEach(player => {
             if (!this.players[player].validated) {
                 this.updateKeyboard(player);
-                this.updateGamepad(player);
             }
         });
+        this.updateGamepad();
     }
 
-    updateGamepad(player) {
-        const gamepadIndex = player - 1;
-        const gamepad = this.input.gamepad.gamepads[gamepadIndex];
-        if (!gamepad) {
-            return;
-        }
-        const horizontalAxis = gamepad.axes[4];
-        const verticalAxis = gamepad.axes[5];
-        const states = this.BUTTON_PRESS_STATES[0];
-        if (!states.UP && verticalAxis.getValue() < 0) {
-            states.UP = true;
-            this.onUp(player);
-        }
-        if (!states.DOWN && verticalAxis.getValue() > 0) {
-            states.DOWN = true;
-            this.onDown(player);
-        }
-        if (!states.LEFT && horizontalAxis.getValue() < 0) {
-            states.LEFT = true;
-            this.onLeft(player);
-        }
-        if (!states.RIGHT && horizontalAxis.getValue() > 0) {
-            states.RIGHT = true;
-            this.onRight(player);
-        }
+    updateGamepad() {
+        ['1', '2'].forEach(player => {
+            const gamepadIndex = player - 1;
+            const gamepad = this.input.gamepad.gamepads[gamepadIndex];
+            if (!gamepad) {
+                return;
+            }
+            const horizontalAxis = gamepad.axes[4];
+            const verticalAxis = gamepad.axes[5];
+            const states = this.BUTTON_PRESS_STATES[player - 1];
+            if (!states.UP && verticalAxis.getValue() < 0) {
+                states.UP = true;
+                this.onUp(player);
+            }
+            if (!states.DOWN && verticalAxis.getValue() > 0) {
+                states.DOWN = true;
+                this.onDown(player);
+            }
+            if (!states.LEFT && horizontalAxis.getValue() < 0) {
+                states.LEFT = true;
+                this.onLeft(player);
+            }
+            if (!states.RIGHT && horizontalAxis.getValue() > 0) {
+                states.RIGHT = true;
+                this.onRight(player);
+            }
 
-        if (horizontalAxis.getValue() === 0 && verticalAxis.getValue() === 0) {
-            states.UP = false;
-            states.DOWN = false;
-            states.LEFT = false;
-            states.RIGHT = false;
-        }
-
+            if (horizontalAxis.getValue() === 0 && verticalAxis.getValue() === 0) {
+                states.UP = false;
+                states.DOWN = false;
+                states.LEFT = false;
+                states.RIGHT = false;
+            }
+        });
         this.input.gamepad.on('down', (pad, button) => {
             const padIndex = pad.index;
             const buttonIndex = button.index;
             const state = this.BUTTON_PRESS_STATES[padIndex][buttonIndex];
-            if (!state && padIndex === 0) {
+            if (!state) {
                 const joypad = JOYPADS[padIndex];
                 const pressedButton = joypad.reverse_mapping[buttonIndex];
                 if (pressedButton) {
                     const letter = joypad.reverse_mapping[buttonIndex].letter;
                     switch (letter) {
                         case 'A':
-                            this.onA(player);
+                            this.onA(padIndex + 1);
                             break;
                         case 'B':
-                            this.onB(player);
+                            this.onB(padIndex + 1);
                             break;
                     }
                 }

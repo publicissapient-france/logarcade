@@ -213,9 +213,6 @@ class SceneGameTwoPlayers extends Phaser.Scene {
     updateGamepads() {
         this.input.gamepad.once('down', (pad, button) => {
             const padIndex = pad.index;
-            if (padIndex !== 0 || this.currentQuestion < 0) {
-                return;
-            }
             const buttonIndex = button.index;
             const pressed = this.BUTTON_PRESS_STATES[padIndex][buttonIndex];
             if (!pressed) {
@@ -223,7 +220,7 @@ class SceneGameTwoPlayers extends Phaser.Scene {
                 const pressedButton = joypad.reverse_mapping[buttonIndex];
                 if (pressedButton) {
                     const text = this.components.answers.texts[pressedButton.index];
-                    this.onPushButton(text, pressedButton.letter, 1);
+                    this.onPushButton(text, pressedButton.letter, padIndex + 1);
                     this.components.buttons.push(pressedButton.letter);
                 }
             }

@@ -68,8 +68,8 @@ const STICK_HORI = {
         9: 'START',
     }
 };
-// const JOYPADS = [STICK_SOULCA, STICK_HORI];
-const JOYPADS = [STICK_HORI, STICK_HORI];
+const JOYPADS = [STICK_SOULCA, STICK_HORI];
+//const JOYPADS = [STICK_HORI, STICK_HORI];
 
 
 const JPAC = false;
