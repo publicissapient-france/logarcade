@@ -212,6 +212,9 @@ class SceneGameTwoPlayers extends Phaser.Scene {
 
     updateGamepads() {
         this.input.gamepad.once('down', (pad, button) => {
+            if (this.currentQuestion < 0) {
+                return;
+            }
             const padIndex = pad.index;
             const buttonIndex = button.index;
             const pressed = this.BUTTON_PRESS_STATES[padIndex][buttonIndex];
