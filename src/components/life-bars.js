@@ -39,6 +39,17 @@ class LifeBars {
         });
     }
 
+    updatePlayerBarMode2Players(onComplete, target = 1) {
+        const health_player = target === 1 ? this.health_P1 : this.health_P2;
+        this.tweens.timeline({
+            targets: health_player,
+            ease: 'Power1',
+            duration: 500,
+            tweens: [{state: health_player.state - this.power}],
+            onComplete,
+        });
+    }
+
 
     updatePlayer1Progress() {
         this.healthbarPlayerOne.setProgress(this.health_P1.state);

@@ -11,6 +11,7 @@ class OnePlayerScores {
             {player: 'ABEAUCHA', time: 60000},
         ];
         this.scores = OnePlayerScores.load() || DEFAULT_SCORES;
+        this.save();
     }
 
     isHiScore(score) {
@@ -26,6 +27,7 @@ class OnePlayerScores {
     }
 
     save() {
+        console.log('SAVE');
         localStorage.setItem('1P_scores', JSON.stringify(this.scores));
     }
 
@@ -43,19 +45,9 @@ class OnePlayerScores {
 class TwoPlayerScores {
 
     constructor() {
-        const DEFAULT_SCORES = [
-            {winner: 'MPAQUE', loser: 'JSMADJA'},
-            {winner: 'JSMADJA', loser: 'JSMADJA'},
-            {winner: 'DATTALI', loser: 'FDESROUS'},
-            {winner: 'PTIRMAN', loser: 'MPAQE'},
-            {winner: 'ABEAUCHA', loser: 'PTIRMAN'},
-            {winner: 'CNGUYEN', loser: 'PTIRMAN'},
-            {winner: 'CNGUYEN', loser: 'FDESROUS'},
-            {winner: 'CNGUYEN', loser: 'PTIRMAN'},
-            {winner: 'KKERNINO', loser: 'JSMADJA'},
-            {winner: 'MTRACCO', loser: 'JSMADJA'},
-        ];
+        const DEFAULT_SCORES = [];
         this.scores = TwoPlayerScores.load() || DEFAULT_SCORES;
+        this.save();
     }
 
     save() {

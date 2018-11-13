@@ -20,6 +20,7 @@ class SceneLogo extends Phaser.Scene {
         for (let i = 0; i < 25; i++) {
             this.load.image(`logo${i}`, `assets/elements/Xebia/Composition 1_000${_.padStart(i, 2, '0')}.png`);
         }
+        // this.load.audio('xebia_sound', 'assets/audio/theme_streetfighter/Capcom.mp3');
     }
 
     create() {
@@ -36,6 +37,8 @@ class SceneLogo extends Phaser.Scene {
         this.logo = this.add.sprite(Screen.WIDTH / 2, Screen.HEIGHT / 2, 'logo0')
             .setScale(Screen.ZOOM)
             .play('snooze');
+
+        // this.sound.add('xebia_sound').play();
 
         this.time.delayedCall(2000, () => this.scene.start('sceneTitle'), [], this);
     }

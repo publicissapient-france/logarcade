@@ -25,12 +25,21 @@ class LogoWindow {
     }
 
     hideLogo() {
-        this.logo.setVisible(false);
+        if (this.logo) {
+            this.logo.setVisible(false);
+        }
     }
 
     hide() {
         this.hideLogo();
         this.window.setVisible(false);
+    }
+
+    show() {
+        if (this.logo) {
+            this.logo.setVisible(true);
+        }
+        this.window.setVisible(true);
     }
 }
 

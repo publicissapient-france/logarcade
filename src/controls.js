@@ -46,9 +46,40 @@ const controlsPlayer2_Jpac = {
     RIGHT: 'G',
 };
 
+const STICK_SOULCA = {
+    reverse_mapping: {
+        0: {letter: 'A', index: 0},
+        2: {letter: 'B', index: 1},
+        3: {letter: 'C', index: 2},
+        1: {letter: 'D', index: 3},
+    },
+    mapping: {
+        9: 'START',
+    }
+};
+const STICK_HORI = {
+    reverse_mapping: {
+        0: {letter: 'A', index: 0},
+        3: {letter: 'B', index: 1},
+        5: {letter: 'C', index: 2},
+        4: {letter: 'D', index: 3},
+    },
+    mapping: {
+        9: 'START',
+    }
+};
+// const JOYPADS = [STICK_SOULCA, STICK_HORI];
+const JOYPADS = [STICK_HORI, STICK_HORI];
+
+
 const JPAC = false;
 
-const CONTROLS_P1 = JPAC ? controlsPlayer1_Jpac : controlsPlayer1_Keyboard;
-const CONTROLS_P2 = JPAC ? controlsPlayer2_Jpac : controlsPlayer2_Keyboard;
+let CONTROLS_P1 = controlsPlayer1_Keyboard;
+let CONTROLS_P2 = controlsPlayer2_Keyboard;
 
-module.exports = {CONTROLS_P1, CONTROLS_P2};
+if (JPAC) {
+    CONTROLS_P1 = controlsPlayer1_Jpac;
+    CONTROLS_P2 = controlsPlayer2_Jpac;
+}
+
+module.exports = {CONTROLS_P1, CONTROLS_P2, JOYPADS};

@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const Screen = require('../components/screen');
 const Game = require('../domain/game');
-const {CONTROLS_P1} = require('../controls');
+const {CONTROLS_P1, JOYPADS} = require('../controls');
 const Ranking = require('../domain/ranking');
 const Background = require('../components/background');
 const TitleBanner = require('../components/title-banner');
@@ -17,6 +17,10 @@ const LETTERS = [
 class SceneEnterNameOnePlayer extends Phaser.Scene {
     constructor() {
         super({key: 'sceneEnterNameOnePlayer'});
+        this.BUTTON_PRESS_STATES = {
+            0: {},
+            1: {},
+        }
     }
 
     init() {
@@ -98,46 +102,127 @@ class SceneEnterNameOnePlayer extends Phaser.Scene {
     }
 
     update() {
+        this.updateKeyboard();
+        this.updateGamepad();
+    }
+
+    updateKeyboard() {
         if (Phaser.Input.Keyboard.JustDown(this.buttons.RIGHT)) {
-            this.selectedIndex++;
-            this.selectLetter();
-            this.highlightSelected();
+            this.onRight();
         }
         if (Phaser.Input.Keyboard.JustDown(this.buttons.LEFT)) {
-            this.selectedIndex--;
-            this.selectLetter();
-            this.highlightSelected();
+            this.onLeft();
         }
         if (Phaser.Input.Keyboard.JustDown(this.buttons.DOWN)) {
-            this.selectedIndex += 6;
-            this.selectLetter();
-            this.highlightSelected();
+            this.onDown();
         }
         if (Phaser.Input.Keyboard.JustDown(this.buttons.UP)) {
-            this.selectedIndex -= 6;
-            this.selectLetter();
-            this.highlightSelected();
+            this.onUp();
         }
         if (Phaser.Input.Keyboard.JustDown(this.buttons.A)) {
-            switch ((this.selected)) {
-                case 'DEL':
-                    this.removeLastCharacter();
-                    break;
-                case 'END':
-                    this.validateName();
-                    break;
-                default:
-                    if (this.nameValue.length < Game.MAX_NAME_LENGTH) {
-                        this.nameValue += this.selected;
-                        this.soundSelected.play();
-                    }
-            }
-            this.updateName();
+            this.onA();
         }
         if (Phaser.Input.Keyboard.JustDown(this.buttons.B)) {
-            this.removeLastCharacter();
-            this.updateName();
+            this.onB();
         }
+    }
+
+    updateGamepad() {
+        const horizontalAxis = this.input.gamepad.gamepads[0].axes[4];
+        const verticalAxis = this.input.gamepad.gamepads[0].axes[5];
+        const states = this.BUTTON_PRESS_STATES[0];
+        if (!states.UP && verticalAxis.getValue() < 0) {
+            states.UP = true;
+            this.onUp();
+        }
+        if (!states.DOWN && verticalAxis.getValue() > 0) {
+            states.DOWN = true;
+            this.onDown();
+        }
+        if (!states.LEFT && horizontalAxis.getValue() < 0) {
+            states.LEFT = true;
+            this.onLeft();
+        }
+        if (!states.RIGHT && horizontalAxis.getValue() > 0) {
+            states.RIGHT = true;
+            this.onRight();
+        }
+
+        if (horizontalAxis.getValue() === 0 && verticalAxis.getValue() === 0) {
+            states.UP = false;
+            states.DOWN = false;
+            states.LEFT = false;
+            states.RIGHT = false;
+        }
+
+        this.input.gamepad.on('down', (pad, button) => {
+            const padIndex = pad.index;
+            const buttonIndex = button.index;
+            const state = this.BUTTON_PRESS_STATES[padIndex][buttonIndex];
+            if (!state && padIndex === 0) {
+                const joypad = JOYPADS[padIndex];
+                const pressedButton = joypad.reverse_mapping[buttonIndex];
+                if (pressedButton) {
+                    const letter = joypad.reverse_mapping[buttonIndex].letter;
+                    switch (letter) {
+                        case 'A':
+                            this.onA();
+                            break;
+                        case 'B':
+                            this.onB();
+                            break;
+                    }
+                }
+            }
+            this.BUTTON_PRESS_STATES[padIndex][buttonIndex] = true;
+        }, this);
+        this.input.gamepad.on('up', (pad, button) => this.BUTTON_PRESS_STATES[pad.index][button.index] = false, this);
+    }
+
+    onB() {
+        this.removeLastCharacter();
+        this.updateName();
+    }
+
+    onA() {
+        switch ((this.selected)) {
+            case 'DEL':
+                this.removeLastCharacter();
+                break;
+            case 'END':
+                this.validateName();
+                break;
+            default:
+                if (this.nameValue.length < Game.MAX_NAME_LENGTH) {
+                    this.nameValue += this.selected;
+                    this.soundSelected.play();
+                }
+        }
+        this.updateName();
+    }
+
+    onUp() {
+        this.selectedIndex -= 6;
+        this.selectLetter();
+        this.highlightSelected();
+    }
+
+    onDown() {
+        this.selectedIndex += 6;
+        this.selectLetter();
+        this.highlightSelected();
+    }
+
+    onLeft() {
+        this.selectedIndex--;
+        this.selectLetter();
+        this.highlightSelected();
+    }
+
+    onRight() {
+        this.selectedIndex++;
+        this.selectLetter();
+        this.highlightSelected();
     }
 
     removeLastCharacter() {
