@@ -44,16 +44,22 @@ class SceneGameOnePlayer extends Phaser.Scene {
         this.components.alertGameOver.preload('GAME_OVER', 'assets/elements/GAME_OVER.png');
         this.components.alertPerfect.preload('PERFECT', 'assets/elements/PERFECT.png');
         this.components.alertNewChallenger.preload('NEW_CHALLENGER', 'assets/elements/NEW_CHALLENGER.png');
+        this.components.countdown.preload();
 
         this.load.path = 'assets/';
-        this.load.audio('theme', ['audio/remix.mp3']);
-        this.load.audio('invalid', ['audio/Jingle 011.wav']);
-        this.load.audio('valid', ['audio/Notification 2.wav']);
+        this.load.audio('theme', 'audio/background-game-3.mp3'); // 1 or 3 sounds good
+        this.load.audio('game-over', 'audio/perc-record-stop.mp3');
+        this.load.audio('timesup', 'audio/timesup.mp3');
+        this.load.audio('invalid', 'audio/wrong.mp3');
+        this.load.audio('valid', 'audio/right.mp3');
 
         this.buttons = {};
     }
 
     create() {
+        const eventEmitter = this.sys.events;
+        eventEmitter.on('countDownFinish', this.onCountDownFinish, this);
+
         // GAME
         this.lives = 3;
         this.quiz = Engine.createQuizFrom(LOGOS, Game.ONE_PLAYER_QUIZ_LENGTH);
@@ -83,15 +89,26 @@ class SceneGameOnePlayer extends Phaser.Scene {
 
         // SOUNDS
         this.theme = this.sound.add('theme');
-        this.theme.play();
+        this.theme.addMarker({
+            name: 'loop',
+            config: {
+                loop: true
+            }
+        });
         this.validSound = this.sound.add('valid');
         this.invalidSound = this.sound.add('invalid');
+        this.gameOverSound = this.sound.add('game-over');
+        this.timesupSound = this.sound.add('timesup');
 
         this.time.delayedCall(3000, () => {
             this.components.timer.launch();
             this.nextQuestion();
         }, [], this);
 
+    }
+
+    onCountDownFinish() {
+        this.theme.play('loop');
     }
 
     nextQuestion() {
@@ -133,6 +150,7 @@ class SceneGameOnePlayer extends Phaser.Scene {
         this.goToLogo();
     }
     endNoMoreLifeGame() {
+        this.gameOverSound.play();
         this.onEndGame();
         this.gameOver = true;
         this.components.alertGameOver.launch();
@@ -140,6 +158,7 @@ class SceneGameOnePlayer extends Phaser.Scene {
     }
 
     endTimeUpGame() {
+        this.timesupSound.play();
         this.onEndGame();
         this.gameOver = true;
         this.components.alertTimesUp.launch();
@@ -152,6 +171,7 @@ class SceneGameOnePlayer extends Phaser.Scene {
     }
 
     update() {
+
         if (!this.gameOver) {
             this.components.lifeBars.updatePlayer1Progress();
 

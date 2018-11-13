@@ -5,6 +5,10 @@ class CountDown {
         Object.assign(this, game);
     }
 
+    preload() {
+        this.load.audio('countdown-bip', ['assets/audio/countdown-bip-2.mp3']);
+    }
+
     create() {
         const fontSize = Screen.FONT_SIZE * 4;
         const x = Screen.WIDTH / 2 - fontSize / 4;
@@ -16,16 +20,22 @@ class CountDown {
             this.add.text(x, y, 2).setFontSize(fontSize).setFontFamily('Impact').setStroke(strokeColor, stroke).setVisible(false),
             this.add.text(x, y, 1).setFontSize(fontSize).setFontFamily('Impact').setStroke(strokeColor, stroke).setVisible(false),
         ];
+
+        this.countDownSound = this.sound.add('countdown-bip');
         for (let i = 0; i < counter.length; i++) {
             this.time.delayedCall(i * 1000, () => {
                 if (i > 0) {
                     counter[i - 1].setVisible(false);
                 }
                 counter[i].setVisible(true);
+                this.countDownSound.play();
             }, [], this);
         }
 
-        this.time.delayedCall(3000, () => counter[2].setVisible(false), [], this);
+        this.time.delayedCall(3000, () => {
+            this.sys.events.emit('countDownFinish');
+            counter[2].setVisible(false);
+        }, [], this);
     }
 
 }

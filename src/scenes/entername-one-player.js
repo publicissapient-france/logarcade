@@ -29,6 +29,7 @@ class SceneEnterNameOnePlayer extends Phaser.Scene {
     preload() {
         this.components.background.preload();
 
+        this.load.audio('entername-theme', ['assets/audio/entername.mp3']);
         this.load.audio('selected', ['assets/audio/Rise02.aif.wav']);
         this.load.audio('deleted', ['assets/audio/Rise03.aif.wav']);
         this.load.audio('ended', ['assets/audio/Rise04.aif.wav']);
@@ -45,6 +46,7 @@ class SceneEnterNameOnePlayer extends Phaser.Scene {
         this.components.background.create();
         this.components.titleBanner.create('      ENTER YOUR NAME      ');
 
+        this.soundTheme = this.sound.add('entername-theme');
         this.soundDeleted = this.sound.add('deleted');
         this.soundSelected = this.sound.add('selected');
         this.soundEnded = this.sound.add('ended');
@@ -73,6 +75,8 @@ class SceneEnterNameOnePlayer extends Phaser.Scene {
                     .setFontFamily('Impact');
             })
             .value();
+
+        this.soundTheme.play();
 
         this.highlightSelected();
         this.updateName();
