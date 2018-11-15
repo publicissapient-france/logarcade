@@ -1,8 +1,6 @@
 const Screen = require('../components/screen');
 const StartGameAction = require('../actions/start-game');
 
-let startBtn;
-
 class SceneTitle extends Phaser.Scene {
 
     constructor() {
@@ -13,24 +11,6 @@ class SceneTitle extends Phaser.Scene {
         this.actions = {
             startGame: new StartGameAction(this),
         };
-
-        const canvas = this.sys.game.canvas;
-        const fullscreen = this.sys.game.device.fullscreen;
-        if (!fullscreen.available) {
-            return;
-        }
-        startBtn = document.createElement('button');
-        startBtn.textContent = 'Start Fullscreen';
-        canvas.parentNode.appendChild(startBtn);
-
-        startBtn.addEventListener('click', function () {
-            if (document.fullscreenElement) {
-                return;
-            }
-            canvas[fullscreen.request]();
-        });
-
-        this.events.on('shutdown', this.shutdown, this);
     }
 
     preload() {
@@ -54,14 +34,6 @@ class SceneTitle extends Phaser.Scene {
 
     update() {
         this.actions.startGame.update();
-    }
-
-    shutdown() {
-        try {
-            var canvas = this.sys.game.canvas;
-            canvas.parentNode.removeChild(startBtn);
-        } catch (e) {
-        }
     }
 
 }

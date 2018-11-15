@@ -3,6 +3,8 @@ const StartGameAction = require('../actions/start-game');
 
 const _ = require('lodash');
 
+let startBtn;
+
 class SceneLogo extends Phaser.Scene {
 
     constructor() {
@@ -13,6 +15,24 @@ class SceneLogo extends Phaser.Scene {
         this.actions = {
             startGame: new StartGameAction(this),
         };
+
+        const canvas = this.sys.game.canvas;
+        const fullscreen = this.sys.game.device.fullscreen;
+        if (!fullscreen.available) {
+            return;
+        }
+        startBtn = document.createElement('button');
+        startBtn.textContent = 'Start Fullscreen';
+        canvas.parentNode.appendChild(startBtn);
+
+        startBtn.addEventListener('click', function () {
+            if (document.fullscreenElement) {
+                return;
+            }
+            canvas[fullscreen.request]();
+        });
+
+        this.events.on('shutdown', this.shutdown, this);
     }
 
     preload() {
@@ -20,7 +40,6 @@ class SceneLogo extends Phaser.Scene {
         for (let i = 0; i < 25; i++) {
             this.load.image(`logo${i}`, `assets/elements/Xebia/Composition 1_000${_.padStart(i, 2, '0')}.png`);
         }
-        // this.load.audio('xebia_sound', 'assets/audio/theme_streetfighter/Capcom.mp3');
     }
 
     create() {
@@ -38,14 +57,21 @@ class SceneLogo extends Phaser.Scene {
             .setScale(Screen.ZOOM)
             .play('snooze');
 
-        // this.sound.add('xebia_sound').play();
-
         this.time.delayedCall(2000, () => this.scene.start('sceneTitle'), [], this);
     }
 
     update() {
         this.actions.startGame.update();
     }
+
+    shutdown() {
+        try {
+            var canvas = this.sys.game.canvas;
+            canvas.parentNode.removeChild(startBtn);
+        } catch (e) {
+        }
+    }
+
 }
 
 module.exports = SceneLogo;

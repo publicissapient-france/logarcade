@@ -1,7 +1,7 @@
 var gulp = require('gulp');
 var gulpfile = require('electron-windows-installer');
 
-gulp.task('create-windows-installer', function(done) {
+gulp.task('default', function(done) {
     gulpfile({
         appDirectory: './logarcade-win32-ia32/',
         outputDirectory: './release',

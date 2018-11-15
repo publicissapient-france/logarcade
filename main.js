@@ -1,6 +1,8 @@
 const electron = require('electron');
 // Module to control application life.
 const app = electron.app;
+const globalShortcut = electron.globalShortcut;
+
 // Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow;
 
@@ -31,7 +33,11 @@ function createWindow() {
         // in an array if your app supports multi windows, this is the time
         // when you should delete the corresponding element.
         mainWindow = null
-    })
+    });
+
+    globalShortcut.register('Alt+Space', () => {
+        // prevent menu from poping
+    });
 }
 
 // This method will be called when Electron has finished
