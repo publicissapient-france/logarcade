@@ -243,6 +243,7 @@ class SceneEnterNameOnePlayer extends Phaser.Scene {
     validateName() {
         Ranking.onePlayerScores().add({player: this.nameValue, time: this.score});
         this.scene.start('sceneScoresOnePlayer');
+        this.soundTheme.pause();
         this.soundEnded.play();
     }
 }

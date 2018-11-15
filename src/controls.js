@@ -72,7 +72,7 @@ const JOYPADS = [STICK_SOULCA, STICK_HORI];
 //const JOYPADS = [STICK_HORI, STICK_HORI];
 
 
-const JPAC = false;
+const JPAC = true;
 
 let CONTROLS_P1 = controlsPlayer1_Keyboard;
 let CONTROLS_P2 = controlsPlayer2_Keyboard;

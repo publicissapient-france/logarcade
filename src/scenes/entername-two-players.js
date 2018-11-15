@@ -292,6 +292,7 @@ class SceneEnterNameTwoPlayers extends Phaser.Scene {
             };
             Ranking.twoPlayerScores().add(score);
             this.scene.start('sceneScoresTwoPlayers');
+            this.soundTheme.pause();
             this.soundEnded.play();
         }
     }
