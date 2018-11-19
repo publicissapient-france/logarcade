@@ -32,6 +32,8 @@ class SceneGameTwoPlayers extends Phaser.Scene {
             alertTimesUp: new Alert(this),
             alertGameOver: new Alert(this),
             alertPerfect: new Alert(this),
+            playerOneWin:new Alert(this),
+            playerTwoWin:new Alert(this),
             alertNewChallenger: new Alert(this),
             logoWindow: new LogoWindow(this),
             timer: new Timer(this),
@@ -46,18 +48,19 @@ class SceneGameTwoPlayers extends Phaser.Scene {
         this.components.logoWindow.preload(LOGOS);
         this.components.timer.preload();
         this.components.countdown.preload();
+        this.components.playerOneWin.preload('PLAYER1_WIN', 'assets/elements/PLAYER1_WIN.png');
+        this.components.playerTwoWin.preload('PLAYER2_WIN', 'assets/elements/PLAYER2_WIN.png');
         this.components.alertTimesUp.preload('TIMES_UP', 'assets/elements/TIMES_UP.png');
         this.components.alertGameOver.preload('GAME_OVER', 'assets/elements/GAME_OVER.png');
         this.components.alertPerfect.preload('PERFECT', 'assets/elements/PERFECT.png');
 
         this.load.path = 'assets/';
-        this.load.audio('theme', ['audio/remix.mp3']);
+        this.load.audio('theme', 'audio/background-game-3.mp3'); // 1 or 3 sounds good
         this.load.audio('invalid', ['audio/Jingle 011.wav']);
         this.load.audio('valid', ['audio/Notification 2.wav']);
         this.load.audio('sound_game_over', ['audio/theme_streetfighter/GAME_OVER.wav']);
         this.load.audio('sound_perfect', ['audio/theme_streetfighter/PERFECT.wav']);
         this.load.audio('sound_fight', ['audio/theme_streetfighter/FIGHT.wav']);
-
 
         this.buttons = {
             P1: {},
@@ -84,6 +87,9 @@ class SceneGameTwoPlayers extends Phaser.Scene {
         this.components.countdown.create();
         this.components.alertTimesUp.create();
         this.components.alertGameOver.create();
+        this.components.alertPerfect.create();
+        this.components.playerOneWin.create();
+        this.components.playerTwoWin.create();
         this.components.alertPerfect.create();
 
         this.components.logoWindow.hide();
@@ -140,7 +146,7 @@ class SceneGameTwoPlayers extends Phaser.Scene {
     }
 
     goToEnterName() {
-        this.time.delayedCall(1000, () => this.scene.start('sceneEnterNameTwoPlayers', {
+        this.time.delayedCall(3000, () => this.scene.start('sceneEnterNameTwoPlayers', {
             winner: this.whoWin(),
             loser: this.whoLose()
         }), [], this);
@@ -157,8 +163,11 @@ class SceneGameTwoPlayers extends Phaser.Scene {
     endOneDead() {
         this.onEndGame();
         this.gameOver = true;
-        this.components.alertGameOver.launch();
-        this.time.delayedCall(2000, () => this.scene.start('sceneLogo'), [], this);
+        if(this.whoWin() === 1) {
+            this.components.playerOneWin.launch();
+        } else {
+            this.components.playerTwoWin.launch();
+        }
         this.gameOverSound.play();
         this.goToEnterName();
     }
@@ -167,7 +176,7 @@ class SceneGameTwoPlayers extends Phaser.Scene {
         this.hideHUD();
         this.gameOver = true;
         this.components.alertTimesUp.launch();
-        this.time.delayedCall(2000, () => this.scene.start('sceneLogo'), [], this);
+        this.time.delayedCall(3000, () => this.scene.start('sceneLogo'), [], this);
     }
 
     onEndGame() {

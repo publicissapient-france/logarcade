@@ -35,6 +35,7 @@ class SceneEnterNameTwoPlayers extends Phaser.Scene {
 
     preload() {
         this.components.background.preload();
+        this.load.audio('entername-theme', ['assets/audio/entername.mp3']);
 
         this.load.audio('selected', ['assets/audio/Rise02.aif.wav']);
         this.load.audio('deleted', ['assets/audio/Rise03.aif.wav']);
@@ -79,6 +80,7 @@ class SceneEnterNameTwoPlayers extends Phaser.Scene {
         this.components.background.create();
         this.components.titleBanner.create('      ENTER YOUR NAMES      ');
 
+        this.soundTheme = this.sound.add('entername-theme');
         this.soundDeleted = this.sound.add('deleted');
         this.soundSelected = this.sound.add('selected');
         this.soundEnded = this.sound.add('ended');
@@ -90,6 +92,8 @@ class SceneEnterNameTwoPlayers extends Phaser.Scene {
                 this.highlightSelected(player);
                 this.updateName(player);
             });
+
+        this.soundTheme.play();
     }
 
     createLetters(player, index) {

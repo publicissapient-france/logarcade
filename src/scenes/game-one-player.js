@@ -59,9 +59,6 @@ class SceneGameOnePlayer extends Phaser.Scene {
         this.load.audio('invalid', 'audio/wrong.mp3');
         this.load.audio('valid', 'audio/right.mp3');
 
-        // this.load.audio('theme', ['audio/remix.mp3']);
-        // this.load.audio('invalid', ['audio/Jingle 011.wav']);
-        // this.load.audio('valid', ['audio/Notification 2.wav']);
         this.load.audio('sound_game_over', ['audio/theme_streetfighter/GAME_OVER.wav']);
         this.load.audio('sound_perfect', ['audio/theme_streetfighter/PERFECT.wav']);
         this.load.audio('sound_fight', ['audio/theme_streetfighter/FIGHT.wav']);
