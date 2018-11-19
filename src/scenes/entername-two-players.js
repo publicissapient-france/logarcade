@@ -231,7 +231,9 @@ class SceneEnterNameTwoPlayers extends Phaser.Scene {
                 this.removeLastCharacter(player);
                 break;
             case 'END':
-                this.validateName(player);
+                if (this.players[player].nameValue.length > 0) {
+                    this.validateName(player);
+                }
                 break;
             default:
                 if (this.players[player].nameValue.length < Game.MAX_NAME_LENGTH) {

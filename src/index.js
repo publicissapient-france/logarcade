@@ -28,7 +28,6 @@ const config = {
 
         SceneGameOnePlayer,
         SceneGameTwoPlayers,
-
         SceneEnterNameOnePlayer,
         SceneEnterNameTwoPlayers,
     ],

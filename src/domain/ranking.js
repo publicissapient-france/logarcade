@@ -27,7 +27,6 @@ class OnePlayerScores {
     }
 
     save() {
-        console.log('SAVE');
         localStorage.setItem('1P_scores', JSON.stringify(this.scores));
     }
 

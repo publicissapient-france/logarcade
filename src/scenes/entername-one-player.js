@@ -128,6 +128,9 @@ class SceneEnterNameOnePlayer extends Phaser.Scene {
     }
 
     updateGamepad() {
+        if (!this.input.gamepad.gamepads[0])
+            return;
+
         const horizontalAxis = this.input.gamepad.gamepads[0].axes[4];
         const verticalAxis = this.input.gamepad.gamepads[0].axes[5];
         const states = this.BUTTON_PRESS_STATES[0];
@@ -190,7 +193,9 @@ class SceneEnterNameOnePlayer extends Phaser.Scene {
                 this.removeLastCharacter();
                 break;
             case 'END':
-                this.validateName();
+                if (this.nameValue.length > 0) {
+                    this.validateName();
+                }
                 break;
             default:
                 if (this.nameValue.length < Game.MAX_NAME_LENGTH) {
