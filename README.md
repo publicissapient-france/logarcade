@@ -40,7 +40,7 @@ Les paramètres de l'écran sont définis dans ```screen.js```
 
 ### Paramètres du jeu
 
-Les paramètres du jeu sont définis dans ```game.js```
+Les paramètres du jeu sont définis dans ```game.config.js```
 
 # Déploiement
 

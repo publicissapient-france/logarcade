@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const Screen = require('../components/screen');
-const Game = require('../domain/game');
+const Game = require('../domain/game.config');
 const {CONTROLS_P1, CONTROLS_P2, JOYPADS} = require('../controls');
 const Ranking = require('../domain/ranking');
 const Background = require('../components/background');

@@ -1,7 +1,7 @@
 const {CONTROLS_P1, CONTROLS_P2, JOYPADS} = require('../controls');
 const LOGOS = require('../domain/logos');
 const Engine = require('../domain/engine');
-const Game = require('../domain/game');
+const Game = require('../domain/game.config');
 
 const Background = require('../components/background');
 const Buttons = require('../components/buttons');
