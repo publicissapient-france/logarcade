@@ -29,6 +29,7 @@
     "mocha": "^5.2.0"
   },
   "devDependencies": {
+    "chai": "4.2.0",
     "electron": "^3.0.6",
     "electron-packager": "^12.2.0",
     "electron-windows-installer": "^1.7.8",

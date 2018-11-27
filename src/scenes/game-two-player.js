@@ -120,7 +120,7 @@ class SceneGameTwoPlayers extends Phaser.Scene {
             this.fightSound.play();
             this.components.logoWindow.show();
             this.components.timer.launch();
-            this.nextQuestion();
+            this.();
         }, [], this);
 
     }
