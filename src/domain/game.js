@@ -7,9 +7,26 @@ class Player {
         this.life = 3;
     }
 
+    setLife(n){
+      this.life = n;
+    }
+
     hurt() {
         this.life--;
     }
+
+    getCurrentLife(){
+        return this.life;
+    }
+
+    isDead(){
+        return this.getCurrentLife() == 0;
+    }
+
+    getId(){
+        return this.id;
+    }
+
 
 }
 
@@ -51,7 +68,16 @@ class Game {
 
     addPlayer() {
         this.players.push(new Player());
+        _.last(this.players).id = this.players.length;
         return _.last(this.players);
+    }
+
+    getPlayers(){
+        return this.players
+    }
+
+    getPodium(){
+        return _.sortBy(this.players, 'life').reverse();
     }
 
     choice(player, answer) {

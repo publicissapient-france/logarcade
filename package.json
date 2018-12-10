@@ -4,7 +4,7 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "dev": "webpack-dev-server",
+    "dev": "npm run test && webpack-dev-server",
     "build": "webpack",
     "test": "mocha test",
     "package:32": "electron-packager . --overwrite --platform=win32 --arch=ia32",

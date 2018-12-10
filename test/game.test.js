@@ -34,7 +34,9 @@ describe('Game', () => {
         const question = game.getCurrentQuestion();
         const answer = question.answers.filter(q => q.valid)[0].name;
         assert.ok(question.isValid(answer));
-    });
+
+        console.log('le quiz', game.quiz);
+     });
 
     it('should go to the next question', () => {
         const game = new Game(2);
@@ -106,6 +108,29 @@ describe('Game', () => {
 
         game.choice(player1, "one");
         assert.equal(player2.life, 2);
+
+    });
+
+    it('should return that player is dead when player doesnt have any life', () => {
+        const game = new Game(3);
+        const player1 = game.addPlayer();
+
+        while(player1.getCurrentLife() != 0 ){
+            player1.hurt();
+        }
+        assert.equal(player1.isDead(), true);
+    });
+
+    it('should return podium of players with winner at beginning', () => {
+        const game = new Game(3);
+        const player1 = game.addPlayer();
+        const player2 = game.addPlayer();
+
+        while(player2.getCurrentLife() != 0 ){
+            player2.hurt();
+        }
+
+        assert.deepEqual(player1, game.getPodium()[0]);
 
     });
 

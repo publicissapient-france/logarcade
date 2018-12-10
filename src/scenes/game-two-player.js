@@ -1,7 +1,8 @@
 const {CONTROLS_P1, CONTROLS_P2, JOYPADS} = require('../controls');
 const LOGOS = require('../domain/logos');
 const Engine = require('../domain/engine');
-const Game = require('../domain/game.config');
+const GameConfig = require('../domain/game.config');
+const Game = require('../domain/game');
 
 const Background = require('../components/background');
 const Buttons = require('../components/buttons');
@@ -70,9 +71,17 @@ class SceneGameTwoPlayers extends Phaser.Scene {
 
     create() {
         // GAME
-        this.quiz = Engine.createQuizFrom(LOGOS, Game.TWO_PLAYER_QUIZ_LENGTH);
-        this.currentQuestion = -1;
-        this.gameOver = false;
+        //this.quiz = Engine.createQuizFrom(LOGOS, GameConfig.TWO_PLAYER_QUIZ_LENGTH);
+        //this.currentQuestion = -1;
+        //this.gameOver = false;
+
+        this.game = new Game(GameConfig.TWO_PLAYER_QUIZ_LENGTH);
+        const player1 = this.game.addPlayer();
+        const player2 = this.game.addPlayer();
+
+        //PRINCIPE DU CALCUL À REVOIR
+        player1.setLife( this.game.getQuestions().length / 2);
+        player2.setLife( this.game.getQuestions().length / 2);
 
         // UI
         this.components.answers.create();
@@ -81,7 +90,7 @@ class SceneGameTwoPlayers extends Phaser.Scene {
         this.components.buttons.create();
         this.components.logoWindow.create();
         this.components.lifeBars.create();
-        this.components.lifeBars.setPower(270 / (this.quiz.length / 2));
+        this.components.lifeBars.setPower(270 / (this.game.getQuestions().length / 2));
 
         this.components.timer.create();
         this.components.countdown.create();
@@ -120,26 +129,22 @@ class SceneGameTwoPlayers extends Phaser.Scene {
             this.fightSound.play();
             this.components.logoWindow.show();
             this.components.timer.launch();
-            this.();
+              this.game.start();
+              this.showCurrentQuestionOnView();
         }, [], this);
 
     }
 
-    nextQuestion() {
-        if (this.currentQuestion == (this.quiz.length - 1)) {
-            this.currentQuestion = 0;
-        } else {
-            this.currentQuestion++;
-        }
-
-        const logoName = this.quiz[this.currentQuestion].validAnswer.name;
+    showCurrentQuestionOnView(){
+        const logoName = this.game.getCurrentLogo();
         this.components.logoWindow.update(logoName);
+
         const question = {
             answers: _.orderBy([
                 logoName,
-                this.quiz[this.currentQuestion].wrongAnswers[0].name,
-                this.quiz[this.currentQuestion].wrongAnswers[1].name,
-                this.quiz[this.currentQuestion].wrongAnswers[2].name,
+                this.game.getCurrentQuestion().answers[1].name,
+                this.game.getCurrentQuestion().answers[2].name,
+                this.game.getCurrentQuestion().answers[3].name,
             ]),
         };
         this.components.answers.update(question);
@@ -147,23 +152,16 @@ class SceneGameTwoPlayers extends Phaser.Scene {
 
     goToEnterName() {
         this.time.delayedCall(3000, () => this.scene.start('sceneEnterNameTwoPlayers', {
-            winner: this.whoWin(),
-            loser: this.whoLose()
+            winner: this.game.getPodium()[0].getId(),
+            loser: this.game.getPodium()[1].getId()
         }), [], this);
-    }
-
-    whoWin() {
-        return (this.components.lifeBars.watchPlayerLife().health_P1 > this.components.lifeBars.watchPlayerLife().health_P2) ? 1 : 2;
-    }
-
-    whoLose() {
-        return (this.components.lifeBars.watchPlayerLife().health_P1 < this.components.lifeBars.watchPlayerLife().health_P2) ? 1 : 2;
     }
 
     endOneDead() {
         this.onEndGame();
         this.gameOver = true;
-        if(this.whoWin() === 1) {
+        //A AMÉLIORER
+        if(this.game.getPodium()[0].getId() === 1) {
             this.components.playerOneWin.launch();
         } else {
             this.components.playerTwoWin.launch();
@@ -203,12 +201,14 @@ class SceneGameTwoPlayers extends Phaser.Scene {
     updateKeyboard() {
         ['A', 'B', 'C', 'D']
             .forEach((button, i) => {
-                if (this.currentQuestion >= 0 && Phaser.Input.Keyboard.JustDown(this.buttons.P1[button])) {
+                //if (this.currentQuestion >= 0 && Phaser.Input.Keyboard.JustDown(this.buttons.P1[button])) {
+                if ( this.game.getCurrentQuestion() && Phaser.Input.Keyboard.JustDown(this.buttons.P1[button])) {
                     const text = this.components.answers.texts[i];
                     const letter = button;
                     this.onPushButton(text, letter, 1);
 
-                } else if (this.currentQuestion >= 0 && Phaser.Input.Keyboard.JustDown(this.buttons.P2[button])) {
+                //} else if (this.currentQuestion >= 0 && Phaser.Input.Keyboard.JustDown(this.buttons.P2[button])) {
+                } else if (this.game.getCurrentQuestion() && Phaser.Input.Keyboard.JustDown(this.buttons.P2[button])) {
                     const text = this.components.answers.texts[i];
                     const letter = button;
                     this.onPushButton(text, letter, 2);
@@ -246,10 +246,13 @@ class SceneGameTwoPlayers extends Phaser.Scene {
         this.onKeyDown(text, player);
         this.components.buttons.getFeedBack(letter, player === 1 ? Colors.color_P1 : Colors.color_P2);
         setTimeout(() => {
-            this.nextQuestion();
+            this.game.nextQuestion();
+            this.showCurrentQuestionOnView();
+
             this.freezed = false;
         }, FREEZE_BETWEEN_QUESTION);
     }
+
 
     onKeyDown(text, player = 1) {
         const onComplete = () => {
@@ -267,7 +270,7 @@ class SceneGameTwoPlayers extends Phaser.Scene {
     }
 
     isAnswerValid(text) {
-        return text._text === this.quiz[this.currentQuestion].validAnswer.name;
+        return this.game.getCurrentQuestion().isValid(text._text);
     }
 
     hideHUD() {
