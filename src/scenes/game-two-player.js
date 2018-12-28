@@ -16,6 +16,8 @@ const CountDown = require('../components/countdown');
 
 const FREEZE_BETWEEN_QUESTION = 500;
 
+const _ = require('lodash');
+
 class SceneGameTwoPlayers extends Phaser.Scene {
     constructor() {
         super({key: 'sceneGameTwoPlayers'});
@@ -67,19 +69,15 @@ class SceneGameTwoPlayers extends Phaser.Scene {
             P1: {},
             P2: {}
         };
+
     }
 
     create() {
         // GAME
-        //this.quiz = Engine.createQuizFrom(LOGOS, GameConfig.TWO_PLAYER_QUIZ_LENGTH);
-        //this.currentQuestion = -1;
-        //this.gameOver = false;
-
         this.game = new Game(GameConfig.TWO_PLAYER_QUIZ_LENGTH);
         const player1 = this.game.addPlayer();
         const player2 = this.game.addPlayer();
 
-        //PRINCIPE DU CALCUL À REVOIR
         player1.setLife( this.game.getQuestions().length / 2);
         player2.setLife( this.game.getQuestions().length / 2);
 
@@ -89,8 +87,14 @@ class SceneGameTwoPlayers extends Phaser.Scene {
 
         this.components.buttons.create();
         this.components.logoWindow.create();
+
         this.components.lifeBars.create();
-        this.components.lifeBars.setPower(270 / (this.game.getQuestions().length / 2));
+        this.components.lifeBars.setPowerShot(
+            (this.components.lifeBars.getWidthDefault() - this.components.lifeBars.getBorderDefault() )  / (this.game.getQuestions().length / 2));
+        const This = this;
+        _.forEach(this.components.lifeBars.getLifeBars(), function( lifebar , i){
+            lifebar.linkWithPlayer(This.game.getPlayerById(i + 1));
+        });
 
         this.components.timer.create();
         this.components.countdown.create();
@@ -120,7 +124,6 @@ class SceneGameTwoPlayers extends Phaser.Scene {
         this.validSound = this.sound.add('valid');
         this.invalidSound = this.sound.add('invalid');
         this.gameOverSound = this.sound.add('sound_game_over');
-        this.perfectSound = this.sound.add('sound_perfect');
         this.fightSound = this.sound.add('sound_fight');
 
         this.theme.play();
@@ -129,8 +132,8 @@ class SceneGameTwoPlayers extends Phaser.Scene {
             this.fightSound.play();
             this.components.logoWindow.show();
             this.components.timer.launch();
-              this.game.start();
-              this.showCurrentQuestionOnView();
+            this.game.start();
+            this.showCurrentQuestionOnView();
         }, [], this);
 
     }
@@ -157,10 +160,9 @@ class SceneGameTwoPlayers extends Phaser.Scene {
         }), [], this);
     }
 
-    endOneDead() {
+    endByKO() {
         this.onEndGame();
         this.gameOver = true;
-        //A AMÉLIORER
         if(this.game.getPodium()[0].getId() === 1) {
             this.components.playerOneWin.launch();
         } else {
@@ -172,6 +174,7 @@ class SceneGameTwoPlayers extends Phaser.Scene {
 
     endTimeUpGame() {
         this.hideHUD();
+        this.onEndGame();
         this.gameOver = true;
         this.components.alertTimesUp.launch();
         this.time.delayedCall(3000, () => this.scene.start('sceneLogo'), [], this);
@@ -185,8 +188,6 @@ class SceneGameTwoPlayers extends Phaser.Scene {
     update() {
         if (!this.gameOver) {
             if (!this.freezed) {
-                this.components.lifeBars.updatePlayer1Progress();
-                this.components.lifeBars.updatePlayer2Progress();
                 this.updateKeyboard();
                 this.updateGamepads();
             }
@@ -195,26 +196,22 @@ class SceneGameTwoPlayers extends Phaser.Scene {
             if (this.components.timer.isTimeUp()) {
                 return this.endTimeUpGame();
             }
+
+            this.components.lifeBars.updatePlayerBars();
         }
     }
 
     updateKeyboard() {
         ['A', 'B', 'C', 'D']
             .forEach((button, i) => {
-                //if (this.currentQuestion >= 0 && Phaser.Input.Keyboard.JustDown(this.buttons.P1[button])) {
                 if ( this.game.getCurrentQuestion() && Phaser.Input.Keyboard.JustDown(this.buttons.P1[button])) {
                     const text = this.components.answers.texts[i];
                     const letter = button;
-                    this.onPushButton(text, letter, 1);
-
-                //} else if (this.currentQuestion >= 0 && Phaser.Input.Keyboard.JustDown(this.buttons.P2[button])) {
+                    this.onKeyDown(text, letter, 1);
                 } else if (this.game.getCurrentQuestion() && Phaser.Input.Keyboard.JustDown(this.buttons.P2[button])) {
                     const text = this.components.answers.texts[i];
                     const letter = button;
-                    this.onPushButton(text, letter, 2);
-                }
-                if (this.buttons.P1[button].isDown || this.buttons.P2[button].isDown) {
-                    this.components.buttons.push(button);
+                    this.onKeyDown(text, letter, 2);
                 }
             });
     }
@@ -232,8 +229,7 @@ class SceneGameTwoPlayers extends Phaser.Scene {
                 const pressedButton = joypad.reverse_mapping[buttonIndex];
                 if (pressedButton) {
                     const text = this.components.answers.texts[pressedButton.index];
-                    this.onPushButton(text, pressedButton.letter, padIndex + 1);
-                    this.components.buttons.push(pressedButton.letter);
+                    this.onKeyDown(text, pressedButton.letter, padIndex + 1);
                 }
             }
             this.BUTTON_PRESS_STATES[padIndex][buttonIndex] = true;
@@ -241,36 +237,25 @@ class SceneGameTwoPlayers extends Phaser.Scene {
         this.input.gamepad.on('up', (pad, button) => this.BUTTON_PRESS_STATES[pad.index][button.index] = false, this);
     }
 
-    onPushButton(text, letter, player) {
+    onKeyDown(text, letter, player) {
         this.freezed = true;
-        this.onKeyDown(text, player);
+
+        this.components.buttons.push(letter);
         this.components.buttons.getFeedBack(letter, player === 1 ? Colors.color_P1 : Colors.color_P2);
+        this.game.choice(this.game.getPlayerById(player), text.text);
+
         setTimeout(() => {
             this.game.nextQuestion();
             this.showCurrentQuestionOnView();
-
             this.freezed = false;
         }, FREEZE_BETWEEN_QUESTION);
-    }
 
 
-    onKeyDown(text, player = 1) {
-        const onComplete = () => {
-            if ((this.components.lifeBars.watchPlayerLife().health_P1 <= 0) || (this.components.lifeBars.watchPlayerLife().health_P2 <= 0)) {
-                this.endOneDead();
-            }
-        };
-
-        if (this.isAnswerValid(text)) {
-            this.components.lifeBars.updatePlayerBarMode2Players(onComplete, player === 1 ? 2 : 1);
-            return this.validSound.play();
+       if ( this.game.getPlayersAlive().length == 1 ) {
+           this.endByKO();
         }
-        this.components.lifeBars.updatePlayerBarMode2Players(onComplete, player);
-        this.invalidSound.play();
-    }
 
-    isAnswerValid(text) {
-        return this.game.getCurrentQuestion().isValid(text._text);
+        (this.game.getCurrentQuestion().isValid(text.text)) ? this.validSound.play() : this.invalidSound.play();
     }
 
     hideHUD() {

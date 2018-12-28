@@ -25,10 +25,14 @@
   },
   "homepage": "https://github.com/xebia-france/logarcade#readme",
   "dependencies": {
+    "babel-loader": "8.0.4",
     "lodash": "^4.17.11",
     "mocha": "^5.2.0"
   },
   "devDependencies": {
+    "@babel/plugin-proposal-class-properties": "7.2.3",
+    "babel-cli": "6.26.0",
+    "babel-plugin-transform-es2015-arrow-functions": "6.22.0",
     "chai": "4.2.0",
     "electron": "^3.0.6",
     "electron-packager": "^12.2.0",

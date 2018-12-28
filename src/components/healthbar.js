@@ -54,15 +54,32 @@ class HealthBar {
     }
 
     setPosition(x, y) {
-        this.config.x = x;
-        this.config.y = y;
+        this.getConfig().x = x;
+        this.getConfig().y = y;
         this.drawBox();
         this.drawHealthBar();
     }
 
-    setProgress(progress) {
-        this.config.bar.progress = progress;
+    linkWithPlayer(player){
+        if(player){ this.config.player = player; }
+    }
+
+    getConfig(){
+        return this.config;
+    }
+
+    getPlayer(){
+        if(this.getConfig().player){ return this.config.player; }
+    }
+
+    updateProgress(p){
         this.drawHealthBar();
+        this.game.tweens.timeline({
+            targets:  this.config.bar,
+            ease: 'Power1',
+            duration: 500,
+            tweens: [{progress: p}],
+        });
     }
 
 }

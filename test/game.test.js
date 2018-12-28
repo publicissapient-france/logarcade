@@ -129,8 +129,21 @@ describe('Game', () => {
         while(player2.getCurrentLife() != 0 ){
             player2.hurt();
         }
-
         assert.deepEqual(player1, game.getPodium()[0]);
+    });
+
+    it('should return players alive only', () => {
+        const game = new Game(3);
+        const player1 = game.addPlayer();
+        const player2 = game.addPlayer();
+        const player3 = game.addPlayer();
+
+        while(player1.getCurrentLife() != 0 && player2.getCurrentLife() != 0 ){
+            player1.hurt();
+            player2.hurt();
+        }
+        assert.deepEqual(game.getPlayersAlive()[0], player3);
+        assert.equal(game.getPlayersAlive().length, 1);
 
     });
 
