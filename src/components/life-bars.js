@@ -8,7 +8,6 @@ class LifeBars {
     }
 
     create() {
-
         this.lifebars = [
             new HealthBar(this, {
                 x: 25,
@@ -23,54 +22,15 @@ class LifeBars {
                 bar: {color: Colors.color_P2, direction: 1, progress:  0 }
             })
         ]
-
-
-        /*var healthbarPlayerOne = new HealthBar(this, {
-            x: 25,
-            y: 27,
-            width: 270,
-            bar: {color: Colors.color_P1, direction: -1}
-        });*/
-
-
-
-        console.log('game on lifebar', this.game);
-        //this.lifebar1.linkWithPlayer(this.game.getPlayers()[0]);
-        //this.lifebar2.linkWithPlayer(this.game.getPlayers()[1]);
-
-        console.log('this.lifebar1', this.lifebar1);
-        console.log('this.lifebar2', this.lifebar2);
-
-        this.health_P1 = {state: 270 - 4};
-        this.power = this.health_P1.state / 3;
-
-        this.health_P2 = {state: 270 - 4};
-
-
-
-    }
-
-    updatePlayerBar(onComplete, target = 1) {
-        let health_player = (target != 1) ? this.health_P2 : this.health_P1;
-        this.tweens.timeline({
-            targets: health_player,
-            ease: 'Power1',
-            duration: 500,
-            tweens: [{state: health_player.state - this.power}],
-            onComplete,
-        });
     }
 
     updatePlayerBars() {
         const This = this
-        // console.log('this.getLifeBars()' , this.getLifeBars());
         _.forEach(this.getLifeBars(), function (lifebar) {
             if(lifebar.getPlayer()){
                 lifebar.updateProgress(This.getPowerShot() * lifebar.getPlayer().getCurrentLife())
 
             }
-          //  console.log('lifbar', lifebar);
-            //console.log('progress lifbar', lifebar.getConfig().bar.progress);
         });
     }
 
